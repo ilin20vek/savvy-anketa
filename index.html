@@ -188,6 +188,7 @@ section{background:var(--white);border:1px solid var(--rule);border-radius:14px;
 
   <p class="mini">
     <button type="button" id="reset">Очистить всё и начать заново</button>
+    <br><span id="buildStamp">версия 31.07.2026 09:46</span>
   </p>
 </div>
 
@@ -218,7 +219,7 @@ var CONFIG = {
   submitUrl: "https://script.google.com/macros/s/AKfycbwY7-UrbjVdA7I_eh32lFlwOAq_M2pl8N5SLhZ1124EGjXejxoKtE0GsTnqnrunlHZxuw/exec",    // URL приёма заказа, POST с телом-JSON
   loadUrl:   "",      // GET ?uid=... - вернуть последний заказ семьи
   secret:    "J_iMUPM1ENIRnPn-",        // отсекает случайных ботов, не защита данных
-  fallbackEmail: "zakaz@savifood.ru",
+  fallbackEmail: "",              // адрес для ответа, когда он будет известен
   policyUrl: ""                   // ссылка на политику обработки данных на сайте
 };
 
@@ -607,17 +608,25 @@ document.getElementById("send").onclick = function(){
       done(false, "Не получилось отправить автоматически.");
     }
   } else {
-    done(false, "");
+    done(false, "NO_ENDPOINT");
   }
 };
 
 function fallback(order, why){
   var text = asText(order);
-  var head = why ? "<p>" + esc(why) + "</p>" : "";
+  var head = "";
+  if(why === "NO_ENDPOINT"){
+    head = '<p>На этой странице приём заказов не подключён - похоже, она ' +
+           'открыта из старой версии. Обновите страницу (потяните вниз или ' +
+           'нажмите обновление в браузере) и отправьте снова: ' +
+           'заполненное сохранится.</p>';
+  } else if(why){
+    head = "<p>" + esc(why) + "</p>";
+  }
   modal('<h2>Ваш заказ готов</h2>' + head +
         '<p>Скопируйте его и пришлите нам ответом на письмо' +
         (CONFIG.fallbackEmail ? " (" + esc(CONFIG.fallbackEmail) + ")" : "") +
-        ' - или сохраните файлом.</p>' +
+        ' - или сохраните файлом, ничего не пропадёт.</p>' +
         '<pre id="orderText">' + esc(text) + '</pre>' +
         '<div class="row">' +
           '<button class="btn" id="copyBtn">Скопировать</button>' +
