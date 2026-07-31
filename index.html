@@ -127,6 +127,29 @@ section{background:var(--white);border:1px solid var(--rule);border-radius:14px;
 .mini{font-size:11.5px;color:var(--muted);text-align:center;margin:14px 0 0}
 .mini button{background:0;border:0;color:var(--muted);text-decoration:underline;font:inherit;cursor:pointer}
 
+/* ---- экран «заказ отправлен» ---- */
+.done{position:fixed;inset:0;z-index:60;background:var(--green);color:#fff;display:none;
+  overflow:auto;padding:calc(28px + env(safe-area-inset-top,0px)) 0 40px}
+.done.open{display:block}
+.done .wrap{text-align:center}
+.done .tick{width:84px;height:84px;border-radius:50%;background:var(--gold);color:var(--green);
+  font:800 44px/84px inherit;margin:10px auto 18px}
+.done h1{font-size:27px;line-height:1.15;margin:0 0 12px}
+.done p{font-size:15px;line-height:1.5;color:#DCEAE0;margin:0 0 14px}
+.done .card{background:rgba(255,255,255,.10);border-radius:14px;padding:14px 16px;
+  text-align:left;margin:18px 0}
+.done .card b{color:var(--gold)}
+.done ol{margin:8px 0 0;padding-left:20px;font-size:14px;line-height:1.6;color:#EAF3EC}
+.done .btn{background:var(--gold);color:var(--green);width:100%;margin-top:8px}
+.done .link{background:0;border:0;color:#CFE3D6;text-decoration:underline;font:inherit;
+  cursor:pointer;margin-top:16px;font-size:13px}
+
+/* ---- метка «заказ уже отправлен» над анкетой ---- */
+.sent-note{background:#E8F3EC;border:1.5px solid var(--green);border-radius:14px;
+  padding:12px 14px;margin:12px 0;font-size:13px;line-height:1.45;display:none}
+.sent-note.show{display:block}
+.sent-note b{color:var(--green)}
+
 /* ---- модалка ---- */
 .modal{position:fixed;inset:0;z-index:40;background:rgba(20,40,30,.55);display:none;
   align-items:flex-end;justify-content:center}
@@ -174,6 +197,8 @@ section{background:var(--white);border:1px solid var(--rule);border-radius:14px;
        на пороге дома.</p>
   </div>
 
+  <div class="sent-note" id="sentNote"></div>
+
   <div id="app"></div>
 
   <label class="consent" id="consentBox">
@@ -188,7 +213,7 @@ section{background:var(--white);border:1px solid var(--rule);border-radius:14px;
 
   <p class="mini">
     <button type="button" id="reset">Очистить всё и начать заново</button>
-    <br><span id="buildStamp">версия 31.07.2026 09:51</span>
+    <br><span id="buildStamp">версия 31.07.2026 10:15</span>
   </p>
 </div>
 
@@ -196,6 +221,26 @@ section{background:var(--white);border:1px solid var(--rule);border-radius:14px;
   <div class="wrap">
     <div class="sum"><b id="dockCount">0 позиций</b><span id="dockHint">черновик сохраняется сам</span></div>
     <button class="btn" id="send">Отправить заказ</button>
+  </div>
+</div>
+
+<div class="done" id="done">
+  <div class="wrap">
+    <div class="tick">&#10003;</div>
+    <h1>Заказ отправлен</h1>
+    <p id="doneSummary"></p>
+    <div class="card">
+      <b>ЧТО БУДЕТ ДАЛЬШЕ</b>
+      <ol>
+        <li>Сведём ваши пожелания с заказами других семей.</li>
+        <li>Узнаем оптовые цены и вернёмся к вам со списком.</li>
+        <li>Позвоним, если нужно будет что-то уточнить.</li>
+        <li>Привезём в выбранный день. Оплата - когда корзина у вас на пороге.</li>
+      </ol>
+    </div>
+    <p>Платить сейчас ничего не нужно. Ждите обратной связи - мы напишем сами.</p>
+    <button class="btn" id="doneClose">Посмотреть свой заказ</button>
+    <button class="link" id="doneAgain">Изменить и отправить снова</button>
   </div>
 </div>
 
@@ -219,6 +264,8 @@ var CONFIG = {
   submitUrl: "https://script.google.com/macros/s/AKfycbwY7-UrbjVdA7I_eh32lFlwOAq_M2pl8N5SLhZ1124EGjXejxoKtE0GsTnqnrunlHZxuw/exec",    // URL приёма заказа, POST с телом-JSON
   loadUrl:   "",      // GET ?uid=... - вернуть последний заказ семьи
   secret:    "J_iMUPM1ENIRnPn-",        // отсекает случайных ботов, не защита данных
+  thanksUrl: "",                  // если на сайте есть своя страница «спасибо» -
+                                  // укажите адрес, и человека перебросит на неё
   fallbackEmail: "",              // адрес для ответа, когда он будет известен
   policyUrl: ""                   // ссылка на политику обработки данных на сайте
 };
@@ -264,7 +311,8 @@ function ensureUid(){
 var UID = ensureUid();
 var KEY = "savvy_anketa_v1_" + UID;
 
-var state = {about:{}, qty:{}, brand:{}, extra:{}, final:{}};
+function emptyState(){ return {about:{}, qty:{}, brand:{}, extra:{}, final:{}, sent:null}; }
+var state = emptyState();
 var saveTimer = null, sentOnce = false, rescued = 0;
 
 /* ---------- хранилище ---------- */
@@ -272,7 +320,7 @@ function load(){
   try{
     var raw = localStorage.getItem(KEY);
     if(!raw) raw = rescueOldDraft();   // черновик мог лежать под прошлой меткой
-    if(raw){ var d = JSON.parse(raw); for(var k in d){ if(state[k]) state[k] = d[k]; } }
+    if(raw){ var d = JSON.parse(raw); for(var k in d){ if(k in state) state[k] = d[k]; } }
   }catch(e){ /* приватный режим - работаем без сохранения */ }
   var pre = {name:params.get("name"), email:params.get("email"), phone:params.get("phone")};
   for(var f in pre){ if(pre[f] && !state.about[f]) state.about[f] = pre[f]; }
@@ -605,12 +653,14 @@ document.getElementById("send").onclick = function(){
   btn.disabled = true; btn.textContent = "Отправляем...";
 
   function done(ok, msg){
-    btn.disabled = false; btn.textContent = "Отправить заказ";
+    btn.disabled = false;
+    btn.textContent = state.sent ? "Отправить изменения" : "Отправить заказ";
     if(ok){
       sentOnce = true;
-      modal('<h2>Заказ принят</h2><p>' + esc(msg) + '</p>' +
-            '<p>Мы сведём ваши пожелания с заказами других семей, узнаем оптовые цены ' +
-            'и вернёмся со списком. Платить пока ничего не нужно.</p>');
+      state.sent = {at: new Date().toISOString(), count: order.items.length};
+      save();
+      if(CONFIG.thanksUrl){ location.href = CONFIG.thanksUrl; return; }
+      showDone();
     } else {
       fallback(order, msg);
     }
@@ -698,12 +748,55 @@ var consentEl = document.getElementById("consent");
   });
 })();
 
+/* ---------- экран «заказ отправлен» ---------- */
+function humanDate(iso){
+  var d = new Date(iso);
+  if(isNaN(d)) return "";
+  var p = function(n){ return (n < 10 ? "0" : "") + n; };
+  return p(d.getDate()) + "." + p(d.getMonth() + 1) + " в " + p(d.getHours()) + ":" + p(d.getMinutes());
+}
+function showDone(){
+  var s = state.sent || {};
+  document.getElementById("doneSummary").textContent =
+    "Мы получили ваш список" + (s.count ? " из " + s.count + " " +
+      plural(s.count, ["позиции","позиций","позиций"]) : "") +
+    (s.at ? ", " + humanDate(s.at) : "") + ".";
+  document.getElementById("done").classList.add("open");
+  document.body.style.overflow = "hidden";
+  scrollTo(0, 0);
+  try{ history.replaceState(null, "", "?sent=1"); }catch(e){}
+  markSent();
+}
+function hideDone(){
+  document.getElementById("done").classList.remove("open");
+  document.body.style.overflow = "";
+  try{ history.replaceState(null, "", location.pathname); }catch(e){}
+}
+/** Метка над анкетой: заказ уже ушёл, правки надо отправить заново. */
+function markSent(){
+  var note = document.getElementById("sentNote");
+  var btn = document.getElementById("send");
+  if(state.sent && state.sent.at){
+    note.innerHTML = "<b>Заказ отправлен " + esc(humanDate(state.sent.at)) + ".</b> " +
+      "Ваши ответы остались здесь, чтобы их можно было проверить. Если что-то " +
+      "измените - нажмите «Отправить изменения», иначе мы возьмём прошлый список.";
+    note.classList.add("show");
+    btn.textContent = "Отправить изменения";
+  } else {
+    note.classList.remove("show");
+    btn.textContent = "Отправить заказ";
+  }
+}
+document.getElementById("doneClose").onclick = hideDone;
+document.getElementById("doneAgain").onclick = hideDone;
+
 document.getElementById("reset").onclick = function(){
   if(!confirm("Стереть все ответы и начать заново?")) return;
   try{ localStorage.removeItem(KEY); }catch(e){}
-  state = {about:{}, qty:{}, brand:{}, extra:{}, final:{}};
+  state = emptyState();
   consentEl.checked = false;
   render();
+  markSent();
   scrollTo({top:0, behavior:"smooth"});
 };
 
@@ -721,6 +814,9 @@ if(CONFIG.loadUrl && UID !== "guest"){
     .catch(function(){});
 }
 render();
+
+markSent();
+if(state.sent && params.get("sent")) showDone();
 
 if(rescued){
   var el = document.getElementById("saved");
