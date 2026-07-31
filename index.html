@@ -188,7 +188,7 @@ section{background:var(--white);border:1px solid var(--rule);border-radius:14px;
 
   <p class="mini">
     <button type="button" id="reset">Очистить всё и начать заново</button>
-    <br><span id="buildStamp">версия 31.07.2026 09:46</span>
+    <br><span id="buildStamp">версия 31.07.2026 09:51</span>
   </p>
 </div>
 
@@ -265,17 +265,45 @@ var UID = ensureUid();
 var KEY = "savvy_anketa_v1_" + UID;
 
 var state = {about:{}, qty:{}, brand:{}, extra:{}, final:{}};
-var saveTimer = null, sentOnce = false;
+var saveTimer = null, sentOnce = false, rescued = 0;
 
 /* ---------- хранилище ---------- */
 function load(){
   try{
     var raw = localStorage.getItem(KEY);
+    if(!raw) raw = rescueOldDraft();   // черновик мог лежать под прошлой меткой
     if(raw){ var d = JSON.parse(raw); for(var k in d){ if(state[k]) state[k] = d[k]; } }
   }catch(e){ /* приватный режим - работаем без сохранения */ }
   var pre = {name:params.get("name"), email:params.get("email"), phone:params.get("phone")};
   for(var f in pre){ if(pre[f] && !state.about[f]) state.about[f] = pre[f]; }
 }
+/**
+ * Подбирает черновик, сохранённый прошлой версией страницы под другой меткой.
+ *
+ * Метка семьи раньше была «guest», теперь генерируется своя. Без этого
+ * человек, обновивший страницу, видел пустую анкету, хотя его ответы лежали
+ * в браузере целыми - так и случилось 31.07.2026.
+ */
+function rescueOldDraft(){
+  var best = null, bestScore = 0;
+  try{
+    for(var i = 0; i < localStorage.length; i++){
+      var k = localStorage.key(i);
+      if(!k || k.indexOf("savvy_anketa_v1_") !== 0 || k === KEY) continue;
+      var d = JSON.parse(localStorage.getItem(k) || "{}");
+      var score = Object.keys(d.qty || {}).length +
+                  Object.keys(d.about || {}).length +
+                  Object.keys(d.extra || {}).length;
+      if(score > bestScore){ best = d; bestScore = score; }
+    }
+  }catch(e){ return null; }
+  if(!best) return null;
+  var raw = JSON.stringify(best);
+  try{ localStorage.setItem(KEY, raw); }catch(e){}
+  rescued = bestScore;
+  return raw;
+}
+
 function save(){
   try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){ return; }
   var el = document.getElementById("saved");
@@ -693,6 +721,13 @@ if(CONFIG.loadUrl && UID !== "guest"){
     .catch(function(){});
 }
 render();
+
+if(rescued){
+  var el = document.getElementById("saved");
+  el.hidden = false;
+  document.getElementById("savedText").textContent = "черновик восстановлен";
+  setTimeout(function(){ el.hidden = true; }, 6000);
+}
 </script>
 </body>
 </html>
