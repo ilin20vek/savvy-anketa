@@ -229,7 +229,38 @@ var STEPS     = ["Вы заполняете эту анкету.", "Мы зво�
 var LABELS    = {"extra": "Чего не хватило в этом разделе?", "extraHint": "Напишите свободно: что ещё возите домой из этой категории и сколько. Добавим это в следующую закупку.", "brand": "Пожелания по маркам в этом разделе", "brandHint": "По желанию. Пишите точно, как на упаковке. Если марки нет - опишите словами: жирность, сорт, размер.", "packShort": "Округляем до упаковки в меньшую сторону, а если недобор больше 30% - добавляем ещё одну."};
 
 var params = new URLSearchParams(location.search);
-var UID = params.get("uid") || params.get("id") || "guest";
+
+/* Метка семьи. Ссылка у всех одна, поэтому метку страница выдаёт себе сама
+   при первом открытии и запоминает на устройстве: тогда человек, вернувшись,
+   правит свой заказ, а не создаёт второй. Метка случайная - подобрать чужую
+   и затереть её заказ нельзя. Если сайт передал свой идентификатор в ссылке
+   (?uid=...), используем его. */
+function randomId(){
+  var s = "";
+  try{
+    var a = new Uint8Array(9);
+    (self.crypto || self.msCrypto).getRandomValues(a);
+    for(var i = 0; i < a.length; i++) s += ("0" + a[i].toString(16)).slice(-2);
+  }catch(e){
+    s = Math.random().toString(36).slice(2) + Date.now().toString(36);
+  }
+  return s.slice(0, 16);
+}
+function ensureUid(){
+  var fromLink = params.get("uid") || params.get("id");
+  if(fromLink) return fromLink;
+  try{
+    var saved = localStorage.getItem("savvy_uid");
+    if(saved) return saved;
+    var fresh = "web-" + randomId();
+    localStorage.setItem("savvy_uid", fresh);
+    return fresh;
+  }catch(e){
+    return "web-" + randomId();   // приватный режим: метка на один сеанс
+  }
+}
+
+var UID = ensureUid();
 var KEY = "savvy_anketa_v1_" + UID;
 
 var state = {about:{}, qty:{}, brand:{}, extra:{}, final:{}};
