@@ -587,16 +587,25 @@ document.getElementById("send").onclick = function(){
     }
   }
   if(CONFIG.submitUrl){
-    // text/plain - чтобы браузер не слал preflight: Apps Script на OPTIONS не отвечает
-    fetch(CONFIG.submitUrl, {
-      method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"},
-      body: JSON.stringify(order)
-    }).then(function(r){
-      if(!r.ok) throw new Error("HTTP " + r.status);
-      done(true, "Спасибо! Ваш список у нас.");
-    }).catch(function(err){
-      done(false, "Не получилось отправить автоматически (" + err.message + ").");
-    });
+    // XMLHttpRequest, а не fetch: на старых телефонах fetch может отсутствовать,
+    // и тогда отправка падала молча, оставляя кнопку в «Отправляем...».
+    // Content-Type text/plain - чтобы браузер не слал preflight OPTIONS,
+    // на который Google Apps Script не отвечает.
+    try{
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", CONFIG.submitUrl, true);
+      xhr.setRequestHeader("Content-Type", "text/plain;charset=utf-8");
+      xhr.timeout = 40000;
+      xhr.onload = function(){
+        if(xhr.status >= 200 && xhr.status < 300) done(true, "Спасибо! Ваш список у нас.");
+        else done(false, "Сервер ответил ошибкой " + xhr.status + ".");
+      };
+      xhr.onerror = function(){ done(false, "Не получилось отправить: нет связи."); };
+      xhr.ontimeout = function(){ done(false, "Отправка заняла слишком долго."); };
+      xhr.send(JSON.stringify(order));
+    }catch(err){
+      done(false, "Не получилось отправить автоматически.");
+    }
   } else {
     done(false, "");
   }
