@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1E673F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SAVVY">
+<meta name="robots" content="noindex, nofollow">
+<title>SAVVY - предзаказ продуктов</title>
+<style>
+/* ---- фирменный стиль SAVVY: зелёный, золото, крем, Montserrat ---- */
+:root{
+  --green:#1E673F; --green-d:#17512F; --gold:#E0A63C; --cream:#F8F1E2;
+  --bg:#F4F3EF; --ink:#244230; --muted:#7C8A80; --rule:#DCD8CC; --white:#fff;
+  --safe-b:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font:400 16px/1.45 "Montserrat","Segoe UI",system-ui,-apple-system,sans-serif;
+  padding-bottom:calc(84px + var(--safe-b));
+}
+.wrap{max-width:560px;margin:0 auto;padding:0 14px}
+
+/* ---- шапка ---- */
+header{
+  position:sticky;top:0;z-index:20;background:var(--green);color:#fff;
+  padding:calc(10px + env(safe-area-inset-top,0px)) 0 10px;
+  box-shadow:0 2px 10px rgba(0,0,0,.12)
+}
+header .wrap{display:flex;align-items:center;gap:10px}
+.brand{font-weight:800;letter-spacing:.18em;color:var(--gold);font-size:13px}
+.saved{margin-left:auto;font-size:11px;color:#CFE3D6;display:flex;align-items:center;gap:5px}
+.saved b{width:7px;height:7px;border-radius:50%;background:var(--gold);display:inline-block}
+.bar{height:4px;background:rgba(255,255,255,.22);margin-top:9px;border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--gold);transition:width .25s}
+.bar-line{font-size:11px;color:#CFE3D6;margin-top:6px}
+
+/* ---- интро ---- */
+.hero{background:var(--green);color:#fff;padding:4px 0 22px}
+.hero h1{margin:6px 0 8px;font-size:26px;line-height:1.15;font-weight:800}
+.hero p{margin:0;font-size:14px;color:#DCEAE0}
+.note{background:var(--cream);border:1px solid var(--gold);border-radius:14px;
+  padding:14px 16px;margin:16px 0;font-size:13.5px;line-height:1.5}
+.note p{margin:0 0 10px}.note p:last-child{margin:0}
+.note b{color:var(--green)}
+
+/* ---- секции ---- */
+section{background:var(--white);border:1px solid var(--rule);border-radius:14px;
+  margin:12px 0;overflow:hidden}
+.sec-head{display:flex;align-items:center;gap:10px;width:100%;border:0;
+  background:var(--green);color:#fff;padding:14px 16px;font:800 15px/1.2 inherit;
+  text-align:left;cursor:pointer}
+.sec-head .cnt{margin-left:auto;font-size:11px;font-weight:700;background:rgba(255,255,255,.16);
+  padding:4px 9px;border-radius:20px;min-width:34px;text-align:center}
+.sec-head .cnt.on{background:var(--gold);color:var(--green)}
+.sec-head .chev{transition:transform .2s;font-size:12px;opacity:.85}
+.sec-head[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.tag-new{background:var(--gold);color:var(--green);font-size:9.5px;font-weight:800;
+  padding:3px 7px;border-radius:20px;letter-spacing:.03em}
+.pack-note{background:var(--cream);border-left:3px solid var(--gold);border-radius:6px;
+  padding:8px 10px;margin:8px 0 4px;font-size:11.5px;line-height:1.4;color:var(--ink)}
+.pack-note b{color:var(--green)}
+.sec-body{padding:6px 14px 14px;display:none}
+.sec-body.open{display:block}
+
+/* ---- строка позиции ---- */
+.item{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid var(--rule)}
+.item:last-of-type{border-bottom:0}
+.item .nm{flex:1;min-width:0}
+.item .nm span{display:block;font-weight:600;font-size:14.5px}
+.item .nm small{color:var(--muted);font-size:11px}
+.item.filled{background:linear-gradient(90deg,rgba(224,166,60,.10),transparent);border-radius:10px}
+.stepper{display:flex;align-items:center;gap:6px;flex:0 0 auto}
+.stepper button{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--green);
+  background:var(--white);color:var(--green);font:700 18px/1 inherit;cursor:pointer}
+.stepper button:active{background:var(--cream)}
+.qty{width:58px;height:36px;border:1.5px solid var(--rule);border-radius:10px;
+  text-align:center;font:700 15px/1 inherit;color:var(--ink);background:var(--white)}
+.qty:focus{outline:0;border-color:var(--gold);background:var(--cream)}
+.qty.on{border-color:var(--green);background:var(--cream)}
+.unit{font-size:12px;font-weight:700;color:var(--muted);width:38px}
+
+/* ---- поля ---- */
+.field{margin:12px 0}
+.field label{display:block;font-weight:700;font-size:13.5px;margin-bottom:5px}
+.field small{display:block;color:var(--muted);font-size:11.5px;margin:-3px 0 6px}
+.field input[type=text],.field input[type=tel],.field input[type=email],
+.field input[type=number],.field textarea{
+  width:100%;border:1.5px solid var(--rule);border-radius:12px;padding:11px 13px;
+  font:400 15px/1.35 inherit;color:var(--ink);background:var(--white)}
+.field textarea{min-height:74px;resize:vertical}
+.field input:focus,.field textarea:focus{outline:0;border-color:var(--gold);background:var(--cream)}
+.field.err input,.field.err textarea,.field.err .choice{border-color:#C2453A}
+.choice{display:flex;flex-wrap:wrap;gap:8px;border:1.5px solid transparent;border-radius:12px}
+.choice button{flex:1 1 30%;min-width:96px;border:1.5px solid var(--rule);background:var(--white);
+  border-radius:12px;padding:11px 8px;font:600 13.5px/1.2 inherit;color:var(--ink);cursor:pointer}
+.choice button[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#fff}
+.free{background:var(--cream);border:1px dashed var(--gold);border-radius:12px;padding:12px;margin-top:12px}
+.free label{font-size:13px}
+.free textarea{background:var(--white)}
+
+/* ---- итог и низ ---- */
+.steps{background:var(--green);color:#fff;border-radius:14px;padding:16px;margin:14px 0}
+.steps h3{margin:0 0 10px;color:var(--gold);font-size:12px;letter-spacing:.08em}
+.steps ol{margin:0;padding-left:20px;font-size:13.5px;line-height:1.5}
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(244,243,239,.96);
+  backdrop-filter:blur(8px);border-top:1px solid var(--rule);
+  padding:10px 0 calc(10px + var(--safe-b))}
+.dock .wrap{display:flex;align-items:center;gap:12px}
+.dock .sum{font-size:12px;color:var(--muted);line-height:1.25}
+.dock .sum b{display:block;font-size:15px;color:var(--ink)}
+.btn{flex:1;border:0;border-radius:12px;background:var(--green);color:#fff;
+  padding:14px 16px;font:800 15px/1 inherit;cursor:pointer}
+.btn:disabled{background:#9BB0A2}
+.btn.ghost{background:transparent;color:var(--green);border:1.5px solid var(--green);
+  font-weight:700;flex:0 0 auto;padding:12px 14px}
+.consent{display:flex;gap:10px;align-items:flex-start;background:var(--white);
+  border:1.5px solid var(--rule);border-radius:14px;padding:14px;margin:12px 0;font-size:12.5px;
+  line-height:1.45;cursor:pointer}
+.consent.err{border-color:#C2453A}
+.consent input{width:22px;height:22px;flex:0 0 auto;accent-color:var(--green);margin:0}
+.consent a{color:var(--green)}
+.mini{font-size:11.5px;color:var(--muted);text-align:center;margin:14px 0 0}
+.mini button{background:0;border:0;color:var(--muted);text-decoration:underline;font:inherit;cursor:pointer}
+
+/* ---- модалка ---- */
+.modal{position:fixed;inset:0;z-index:40;background:rgba(20,40,30,.55);display:none;
+  align-items:flex-end;justify-content:center}
+.modal.open{display:flex}
+.sheet{background:var(--white);width:100%;max-width:560px;border-radius:18px 18px 0 0;
+  padding:20px 16px calc(20px + var(--safe-b));max-height:88vh;overflow:auto}
+.sheet h2{margin:0 0 8px;font-size:19px}
+.sheet p{font-size:14px;margin:0 0 12px}
+.sheet pre{background:var(--bg);border:1px solid var(--rule);border-radius:12px;padding:12px;
+  font:400 12px/1.45 ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap;max-height:34vh;overflow:auto}
+.sheet .row{display:flex;gap:8px;margin-top:12px}
+.err-list{color:#C2453A;font-size:13px;margin:0 0 12px;padding-left:18px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <span class="brand">SAVVY</span>
+    <span class="saved" id="saved" hidden><b></b><span id="savedText">черновик сохранён</span></span>
+  </div>
+  <div class="wrap"><div class="bar"><i id="progress"></i></div>
+    <div class="bar-line" id="progressText">Заполните то, что нужно вашей семье</div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <h1>Предзаказ<br>продуктов</h1>
+    <p>Укажите, сколько чего привезти вашей семье первой машиной</p>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="note">
+    <p><b>Как заполнять.</b> Ставьте количество в том, в чём удобно считать: молоко в литрах,
+       творог в килограммах, чурчхела в штуках. Единица уже подписана у каждого поля.</p>
+    <p><b>Не нужен продукт - оставьте поле пустым.</b> Всё, что пусто, мы не везём.
+       Категория вам не нужна - просто не заполняйте её. Нужна только при условии конкретной марки - напишите марку в поле в конце раздела, и мы возьмём её или не возьмём ничего.</p>
+    <p><b>Про фасовку.</b> Фасовка на базе своя, поэтому ваше число мы округляем до целой упаковки в меньшую сторону. Если при этом недобор получается больше 30%, берём ещё одну упаковку. Например: попросили 0,5 кг сметаны, а пачки по 300 г - привезём две пачки, 600 г.</p>
+    <p><b>Ответы сохраняются сами.</b> Можно закрыть страницу и вернуться позже с того же
+       телефона - цифры останутся на месте.</p>
+    <p><b>Платить сейчас ничего не нужно.</b> Сначала соберём пожелания всех семей, узнаем
+       оптовые цены и вернёмся к вам со списком. Оплата - только когда корзина у вас
+       на пороге дома.</p>
+  </div>
+
+  <div id="app"></div>
+
+  <label class="consent" id="consentBox">
+    <input type="checkbox" id="consent">
+    <span id="consentText"></span>
+  </label>
+
+  <div class="steps">
+    <h3>ЧТО БУДЕТ ДАЛЬШЕ</h3>
+    <ol id="nextSteps"></ol>
+  </div>
+
+  <p class="mini">
+    <button type="button" id="reset">Очистить всё и начать заново</button>
+  </p>
+</div>
+
+<div class="dock">
+  <div class="wrap">
+    <div class="sum"><b id="dockCount">0 позиций</b><span id="dockHint">черновик сохраняется сам</span></div>
+    <button class="btn" id="send">Отправить заказ</button>
+  </div>
+</div>
+
+<div class="modal" id="modal">
+  <div class="sheet">
+    <div id="modalBody"></div>
+    <div class="row">
+      <button class="btn ghost" id="modalClose">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================================
+   SAVVY - анкета предзаказа. Один файл, без внешних зависимостей.
+
+   ХАДИСУ: настройки ниже. Если submitUrl пустой, страница работает в резервном
+   режиме: показывает готовый заказ, который можно скопировать или скачать.
+   ========================================================================== */
+var CONFIG = {
+  submitUrl: "",                  // URL приёма заказа, POST JSON
+  loadUrl:   "",                  // GET ?uid=... - вернуть сохранённый черновик
+  fallbackEmail: "zakaz@savifood.ru",
+  policyUrl: ""                   // ссылка на политику обработки данных на сайте
+};
+
+var CATALOG   = [{"id": "moloko", "title": "Молочные продукты и яйца", "isNew": false, "brand": "Например: «молоко Сарафаново - пригодно для детского питания», «сметана 20%, для выпечки нужна именно такая».", "items": [{"id": "moloko_e93c1d", "name": "Молоко 3,2%", "unit": "л", "hint": "2-4", "step": 1}, {"id": "moloko_e6c168", "name": "Кефир", "unit": "л", "hint": "1-2", "step": 1}, {"id": "moloko_2ba4cf", "name": "Творог 9%", "unit": "кг", "hint": "1-2", "step": 0.5}, {"id": "moloko_9571ae", "name": "Творог зернёный", "unit": "кг", "hint": "0,3-0,6", "step": 0.3}, {"id": "moloko_2fddc3", "name": "Сметана 15-20%", "unit": "кг", "hint": "0,6-1,2", "step": 0.5}, {"id": "moloko_e2b2c3", "name": "Йогурт натуральный", "unit": "шт", "hint": "3-6", "step": 1}, {"id": "moloko_a440fd", "name": "Детские творожки", "unit": "шт", "hint": "5-10", "step": 1}, {"id": "moloko_aeeb97", "name": "Сырки творожные в шоколаде", "unit": "шт", "hint": "5-10", "step": 1}, {"id": "moloko_311be8", "name": "Сыр российский", "unit": "кг", "hint": "0,5-1", "step": 0.5}, {"id": "moloko_9f1be7", "name": "Сыр гауда", "unit": "кг", "hint": "0,5-1", "step": 0.5}, {"id": "moloko_4d5a6f", "name": "Брынза", "unit": "кг", "hint": "0,3-0,5", "step": 0.5}, {"id": "moloko_a0a2b2", "name": "Сыр фета", "unit": "кг", "hint": "0,3-0,5", "step": 0.5}, {"id": "moloko_f78383", "name": "Сулугуни", "unit": "кг", "hint": "0,3-0,5", "step": 0.5}, {"id": "moloko_cff4f0", "name": "Моцарелла", "unit": "шт", "hint": "1-2", "step": 1}, {"id": "moloko_3a6442", "name": "Масло сливочное 82,5%", "unit": "кг", "hint": "0,4-0,8", "step": 0.2}, {"id": "moloko_d0fd74", "name": "Сливки", "unit": "л", "hint": "0,25-0,5", "step": 0.25}, {"id": "moloko_adc942", "name": "Яйцо куриное С1", "unit": "шт", "hint": "30-70", "step": 10}]}, {"id": "myaso", "title": "Мясо и птица", "isNew": false, "brand": "Например: «курица суповая, которая по двору бегала, а не бройлер», «говядина без жил».", "items": [{"id": "myaso_47e388", "name": "Фарш говяжий", "unit": "кг", "hint": "1,5-3", "step": 0.5}, {"id": "myaso_a12096", "name": "Говядина, мякоть", "unit": "кг", "hint": "2,5-5", "step": 0.5}, {"id": "myaso_908818", "name": "Говядина на кости", "unit": "кг", "hint": "1-2", "step": 0.5}, {"id": "myaso_ff097f", "name": "Баранина", "unit": "кг", "hint": "1-2", "step": 0.5}, {"id": "myaso_f16c4e", "name": "Печень говяжья", "unit": "кг", "hint": "1,5-3", "step": 0.5}, {"id": "myaso_86faf4", "name": "Язык говяжий", "unit": "кг", "hint": "0,5-1", "step": 0.5}, {"id": "myaso_8ac7ff", "name": "Курица целая", "unit": "шт", "hint": "3-6", "step": 1}, {"id": "myaso_e4db69", "name": "Филе куриное", "unit": "кг", "hint": "2,5-5", "step": 0.5}, {"id": "myaso_51eda4", "name": "Бёдра куриные", "unit": "кг", "hint": "2-4", "step": 0.5}, {"id": "myaso_91eda6", "name": "Голени куриные", "unit": "кг", "hint": "2-4", "step": 0.5}, {"id": "myaso_d7a781", "name": "Печень куриная", "unit": "кг", "hint": "0,5-1", "step": 0.5}, {"id": "myaso_f10921", "name": "Сердечки куриные", "unit": "кг", "hint": "0,5-1", "step": 0.5}, {"id": "myaso_8a626a", "name": "Индейка, филе", "unit": "кг", "hint": "1,5-3", "step": 0.5}, {"id": "myaso_8301a9", "name": "Фарш индейки", "unit": "кг", "hint": "1-2", "step": 0.5}, {"id": "myaso_27d0bc", "name": "Сосиски", "unit": "кг", "hint": "2", "step": 0.5}, {"id": "myaso_a4eea8", "name": "Колбаса варёная", "unit": "кг", "hint": "0,5-1", "step": 0.5}, {"id": "myaso_f1eff5", "name": "Сало", "unit": "кг", "hint": "0,5-1", "step": 0.5}]}, {"id": "ryba", "title": "Рыба и морепродукты", "isNew": false, "brand": "Например: «сельдь крупная, на засолку», «лосось охлаждённый».", "items": [{"id": "ryba_5b58db", "name": "Лосось", "unit": "кг", "hint": "1,5-3", "step": 0.5}, {"id": "ryba_b69e31", "name": "Форель", "unit": "кг", "hint": "1-2", "step": 0.5}, {"id": "ryba_7694c2", "name": "Рыбные котлеты", "unit": "кг", "hint": "1-2", "step": 0.5}, {"id": "ryba_5141b9", "name": "Минтай", "unit": "кг", "hint": "1-2", "step": 0.5}, {"id": "ryba_456886", "name": "Судак", "unit": "кг", "hint": "1-2", "step": 0.5}, {"id": "ryba_7c3a51", "name": "Сельдь на засолку", "unit": "кг", "hint": "1-2", "step": 0.5}, {"id": "ryba_465a6a", "name": "Кальмары", "unit": "кг", "hint": "0,5-1", "step": 0.5}, {"id": "ryba_95f738", "name": "Тунец консервированный", "unit": "шт", "hint": "2-4", "step": 1}, {"id": "ryba_0db9b3", "name": "Шпроты", "unit": "шт", "hint": "2-4", "step": 1}, {"id": "ryba_beb72e", "name": "Килька в томате", "unit": "шт", "hint": "2-4", "step": 1}]}, {"id": "zamorozka", "title": "Заморозка и полуфабрикаты", "isNew": true, "brand": "Например: «пельмени только из говядины», «ягода без сахара».", "items": [{"id": "zamorozka_652e35", "name": "Пельмени", "unit": "кг", "hint": "1-2", "step": 0.5}, {"id": "zamorozka_32220d", "name": "Вареники", "unit": "кг", "hint": "1-2", "step": 0.5}, {"id": "zamorozka_cb39fe", "name": "Хинкали, манты", "unit": "кг", "hint": "1-2", "step": 0.5}, {"id": "zamorozka_b7bd20", "name": "Котлеты замороженные", "unit": "кг", "hint": "1-2", "step": 0.5}, {"id": "zamorozka_9a3f43", "name": "Наггетсы куриные", "unit": "кг", "hint": "0,5-1", "step": 0.5}, {"id": "zamorozka_209cbc", "name": "Блины с начинкой", "unit": "кг", "hint": "0,5-1", "step": 0.5}, {"id": "zamorozka_0bfa0e", "name": "Брокколи замороженная", "unit": "кг", "hint": "0,5-1", "step": 0.5}, {"id": "zamorozka_34396e", "name": "Фасоль стручковая", "unit": "кг", "hint": "0,5-1", "step": 0.5}, {"id": "zamorozka_ca7b9e", "name": "Смесь овощная", "unit": "кг", "hint": "0,5-1", "step": 0.5}, {"id": "zamorozka_309d74", "name": "Ягода замороженная", "unit": "кг", "hint": "0,5-1", "step": 0.5}, {"id": "zamorozka_7d40f1", "name": "Рыбное филе замороженное", "unit": "кг", "hint": "1-2", "step": 0.5}, {"id": "zamorozka_2ac9f5", "name": "Тесто слоёное", "unit": "кг", "hint": "0,5-1", "step": 0.5}, {"id": "zamorozka_2db2bc", "name": "Мороженое", "unit": "кг", "hint": "0,5-1", "step": 0.5}]}, {"id": "ovoshchi", "title": "Овощи и зелень", "isNew": false, "brand": "Например: «морковь только мытая», «картофель не рассыпчатый».", "items": [{"id": "ovoshchi_3ba9a7", "name": "Картофель", "unit": "кг", "hint": "5-10", "step": 1}, {"id": "ovoshchi_c3b9c1", "name": "Морковь мытая", "unit": "кг", "hint": "5-10", "step": 1}, {"id": "ovoshchi_efbbcc", "name": "Лук репчатый", "unit": "кг", "hint": "2-4", "step": 1}, {"id": "ovoshchi_544c20", "name": "Свёкла", "unit": "кг", "hint": "1-2", "step": 1}, {"id": "ovoshchi_dd031b", "name": "Капуста белокочанная", "unit": "шт", "hint": "1-2", "step": 1}, {"id": "ovoshchi_dc0231", "name": "Капуста цветная", "unit": "шт", "hint": "1-2", "step": 1}, {"id": "ovoshchi_27b4cf", "name": "Капуста пекинская", "unit": "шт", "hint": "1-2", "step": 1}, {"id": "ovoshchi_a77370", "name": "Брокколи свежая", "unit": "шт", "hint": "1-2", "step": 1}, {"id": "ovoshchi_e3f188", "name": "Помидоры", "unit": "кг", "hint": "3-5", "step": 0.5}, {"id": "ovoshchi_4a88c3", "name": "Помидоры черри", "unit": "кг", "hint": "0,5-1", "step": 0.5}, {"id": "ovoshchi_09a20a", "name": "Огурцы", "unit": "кг", "hint": "3-6", "step": 0.5}, {"id": "ovoshchi_6875e6", "name": "Перец болгарский", "unit": "кг", "hint": "1-2", "step": 0.5}, {"id": "ovoshchi_4e76fd", "name": "Кабачки", "unit": "кг", "hint": "1-2", "step": 0.5}, {"id": "ovoshchi_c9965f", "name": "Баклажаны", "unit": "кг", "hint": "1-2", "step": 0.5}, {"id": "ovoshchi_22aaf7", "name": "Грибы шампиньоны", "unit": "кг", "hint": "0,5-1", "step": 0.5}, {"id": "ovoshchi_d8639f", "name": "Редис", "unit": "кг", "hint": "0,3-0,6", "step": 0.3}, {"id": "ovoshchi_5033b4", "name": "Салат айсберг", "unit": "шт", "hint": "1-2", "step": 1}, {"id": "ovoshchi_206c7e", "name": "Руккола", "unit": "шт", "hint": "1-2", "step": 1}, {"id": "ovoshchi_9ec106", "name": "Укроп", "unit": "пучок", "hint": "1-3", "step": 1}, {"id": "ovoshchi_e95962", "name": "Петрушка", "unit": "пучок", "hint": "1-3", "step": 1}, {"id": "ovoshchi_0f4aa7", "name": "Кинза", "unit": "пучок", "hint": "1-3", "step": 1}]}, {"id": "frukty", "title": "Фрукты и ягоды", "isNew": false, "brand": "Например: «яблоки кисло-сладкие», «бананы недозрелые, чтобы полежали».", "items": [{"id": "frukty_77b8d4", "name": "Яблоки", "unit": "кг", "hint": "4-8", "step": 1}, {"id": "frukty_9b44dc", "name": "Бананы", "unit": "кг", "hint": "5-10", "step": 1}, {"id": "frukty_f3925e", "name": "Груши", "unit": "кг", "hint": "2-4", "step": 0.5}, {"id": "frukty_c67aa0", "name": "Апельсины", "unit": "кг", "hint": "1-3", "step": 1}, {"id": "frukty_d3b17c", "name": "Мандарины", "unit": "кг", "hint": "1-3", "step": 1}, {"id": "frukty_897b36", "name": "Лимоны", "unit": "кг", "hint": "0,5-1", "step": 0.5}, {"id": "frukty_d41eeb", "name": "Гранаты", "unit": "кг", "hint": "1-2", "step": 0.5}, {"id": "frukty_b5f367", "name": "Авокадо", "unit": "шт", "hint": "5-10", "step": 1}, {"id": "frukty_4ff58c", "name": "Персики, нектарины", "unit": "кг", "hint": "1-2", "step": 0.5}, {"id": "frukty_a0f470", "name": "Абрикосы", "unit": "кг", "hint": "1-2", "step": 0.5}, {"id": "frukty_2527a6", "name": "Клубника", "unit": "кг", "hint": "0,5-1", "step": 0.5}, {"id": "frukty_b0e924", "name": "Малина", "unit": "кг", "hint": "0,25-0,5", "step": 0.25}, {"id": "frukty_41b6d0", "name": "Голубика", "unit": "кг", "hint": "0,25-0,5", "step": 0.25}, {"id": "frukty_814cb1", "name": "Арбуз", "unit": "шт", "hint": "1-2", "step": 1}, {"id": "frukty_8134ef", "name": "Дыня", "unit": "шт", "hint": "1-2", "step": 1}]}, {"id": "bakaleya", "title": "Крупы, макароны, бакалея", "isNew": false, "brand": "Например: «гречка ядрица», «масло подсолнечное нерафинированное».", "items": [{"id": "bakaleya_55530f", "name": "Гречка", "unit": "кг", "hint": "3-6", "step": 1}, {"id": "bakaleya_67534f", "name": "Рис", "unit": "кг", "hint": "2-4", "step": 1}, {"id": "bakaleya_097467", "name": "Макароны", "unit": "кг", "hint": "3-7", "step": 1}, {"id": "bakaleya_2b88bd", "name": "Спагетти", "unit": "кг", "hint": "1-2", "step": 0.5}, {"id": "bakaleya_4ffb14", "name": "Овсянка", "unit": "кг", "hint": "1-2", "step": 0.5}, {"id": "bakaleya_cfe2cb", "name": "Пшено", "unit": "кг", "hint": "0,5-1", "step": 0.5}, {"id": "bakaleya_a2ee1f", "name": "Булгур", "unit": "кг", "hint": "0,5-1", "step": 0.5}, {"id": "bakaleya_dcfb9a", "name": "Киноа", "unit": "кг", "hint": "0,5-1", "step": 0.5}, {"id": "bakaleya_4cd4c8", "name": "Чечевица", "unit": "кг", "hint": "0,5-1", "step": 0.5}, {"id": "bakaleya_fda3a1", "name": "Кускус", "unit": "кг", "hint": "0,5-1", "step": 0.5}, {"id": "bakaleya_9b6cab", "name": "Мука", "unit": "кг", "hint": "2-5", "step": 1}, {"id": "bakaleya_6f4519", "name": "Сахар", "unit": "кг", "hint": "2-5", "step": 1}, {"id": "bakaleya_646298", "name": "Соль", "unit": "кг", "hint": "1-2", "step": 1}, {"id": "bakaleya_882cc6", "name": "Масло подсолнечное", "unit": "л", "hint": "1-3", "step": 1}, {"id": "bakaleya_becb0b", "name": "Масло оливковое", "unit": "л", "hint": "0,5-1", "step": 0.5}, {"id": "bakaleya_7992a1", "name": "Томатная паста", "unit": "шт", "hint": "2-4", "step": 1}, {"id": "bakaleya_e6c5f7", "name": "Томаты в собственном соку", "unit": "шт", "hint": "2-4", "step": 1}, {"id": "bakaleya_ccb35a", "name": "Мёд", "unit": "кг", "hint": "0,5-1", "step": 0.5}, {"id": "bakaleya_18f060", "name": "Сгущёнка", "unit": "шт", "hint": "2-4", "step": 1}, {"id": "bakaleya_9103a7", "name": "Грецкий орех", "unit": "кг", "hint": "0,5-1", "step": 0.5}, {"id": "bakaleya_971bb2", "name": "Кешью", "unit": "кг", "hint": "0,3-0,5", "step": 0.25}, {"id": "bakaleya_c896ac", "name": "Миндаль", "unit": "кг", "hint": "0,3-0,5", "step": 0.25}, {"id": "bakaleya_0cd124", "name": "Курага", "unit": "кг", "hint": "0,5-1", "step": 0.5}, {"id": "bakaleya_4ecc44", "name": "Чернослив", "unit": "кг", "hint": "0,5-1", "step": 0.5}, {"id": "bakaleya_7146de", "name": "Финики", "unit": "кг", "hint": "0,5-1", "step": 0.5}, {"id": "bakaleya_95a3b5", "name": "Компотная смесь", "unit": "кг", "hint": "0,5-1", "step": 0.5}]}, {"id": "hleb", "title": "Хлеб", "isNew": true, "brand": "Например: «хлеб бездрожжевой», «лаваш тонкий армянский».", "items": [{"id": "hleb_e8262b", "name": "Хлеб белый", "unit": "шт", "hint": "2-4", "step": 1}, {"id": "hleb_c898ec", "name": "Батон", "unit": "шт", "hint": "2-4", "step": 1}, {"id": "hleb_7b14b6", "name": "Хлеб зерновой", "unit": "шт", "hint": "2-4", "step": 1}, {"id": "hleb_3c4166", "name": "Хлеб ржаной", "unit": "шт", "hint": "2-4", "step": 1}, {"id": "hleb_c863eb", "name": "Лаваш", "unit": "шт", "hint": "2-4", "step": 1}]}, {"id": "chay", "title": "Чай, кофе, сладкое", "isNew": true, "brand": "Например: «кофе в зёрнах, арабика», «чай только чёрный листовой».", "items": [{"id": "chay_0eb447", "name": "Чай листовой", "unit": "кг", "hint": "0,2-0,5", "step": 0.1}, {"id": "chay_a4013d", "name": "Кофе", "unit": "кг", "hint": "0,5-1", "step": 0.25}, {"id": "chay_929bbd", "name": "Какао", "unit": "кг", "hint": "0,25-0,5", "step": 0.25}, {"id": "chay_9dd5c1", "name": "Шоколад горький", "unit": "шт", "hint": "2-5", "step": 1}, {"id": "chay_0d187b", "name": "Пастила", "unit": "кг", "hint": "0,3-0,5", "step": 0.25}, {"id": "chay_852321", "name": "Чурчхела", "unit": "шт", "hint": "2-5", "step": 1}]}, {"id": "hoztovary", "title": "Хозтовары", "isNew": false, "brand": "Например: «таблетки только Finish», «порошок Ариэль Color», «пакеты для мусора 60 л с завязками».", "items": [{"id": "hoztovary_05b2f2", "name": "Туалетная бумага", "unit": "рулон", "hint": "6-12", "step": 1}, {"id": "hoztovary_1b9ca8", "name": "Полотенца бумажные", "unit": "рулон", "hint": "2-4", "step": 1}, {"id": "hoztovary_ee15ad", "name": "Тряпки одноразовые", "unit": "рулон", "hint": "1-2", "step": 1}, {"id": "hoztovary_1ccddf", "name": "Салфетки на стол", "unit": "пачка", "hint": "2-4", "step": 1}, {"id": "hoztovary_6ca401", "name": "Средство для мытья посуды", "unit": "шт", "hint": "1-2", "step": 1}, {"id": "hoztovary_cc5253", "name": "Губки для посуды", "unit": "шт", "hint": "3-5", "step": 1}, {"id": "hoztovary_b993a0", "name": "Пакеты для мусора", "unit": "пачка", "hint": "1-2", "step": 1}, {"id": "hoztovary_45edf8", "name": "Чистящее средство", "unit": "шт", "hint": "1-3", "step": 1}, {"id": "hoztovary_7a0b51", "name": "Мешки для пылесоса", "unit": "шт", "hint": "1-2", "step": 1}, {"id": "hoztovary_cafd3c", "name": "Гель для стирки", "unit": "шт", "hint": "1-3", "step": 1}, {"id": "hoztovary_8df02c", "name": "Стиральный порошок", "unit": "кг", "hint": "3-6", "step": 1}, {"id": "hoztovary_631327", "name": "Ополаскиватель для белья", "unit": "шт", "hint": "1-2", "step": 1}, {"id": "hoztovary_d38cdb", "name": "Пятновыводитель", "unit": "шт", "hint": "1-2", "step": 1}, {"id": "hoztovary_989bee", "name": "Таблетки для посудомойки", "unit": "пачка", "hint": "1-2", "step": 1}, {"id": "hoztovary_253378", "name": "Соль для посудомойки", "unit": "кг", "hint": "1-2", "step": 1}]}, {"id": "gigiena", "title": "Гигиена", "isNew": false, "brand": "Например: «Фа Мужской Морской бриз», «паста детская без фтора».", "items": [{"id": "gigiena_0ff2cf", "name": "Мыло жидкое", "unit": "л", "hint": "1-2", "step": 0.5}, {"id": "gigiena_d424a7", "name": "Мыло твёрдое", "unit": "шт", "hint": "2-4", "step": 1}, {"id": "gigiena_d0fe5f", "name": "Шампунь", "unit": "л", "hint": "1-2", "step": 0.5}, {"id": "gigiena_f69c59", "name": "Гель для душа", "unit": "л", "hint": "1-2", "step": 0.5}, {"id": "gigiena_228327", "name": "Зубная паста взрослая", "unit": "шт", "hint": "1-2", "step": 1}, {"id": "gigiena_578043", "name": "Зубная паста детская", "unit": "шт", "hint": "1-2", "step": 1}, {"id": "gigiena_459f23", "name": "Ушные палочки", "unit": "пачка", "hint": "1-2", "step": 1}, {"id": "gigiena_3a33ff", "name": "Ватные диски", "unit": "пачка", "hint": "1-2", "step": 1}, {"id": "gigiena_5cb52d", "name": "Влажные салфетки", "unit": "пачка", "hint": "2-4", "step": 1}]}, {"id": "detskoe", "title": "Детское", "isNew": true, "brand": "Например: «подгузники Pampers Premium, размер 4», «пюре без сахара».", "items": [{"id": "detskoe_35c7fd", "name": "Подгузники", "unit": "пачка", "hint": "1-2", "step": 1}, {"id": "detskoe_aa7737", "name": "Детские влажные салфетки", "unit": "пачка", "hint": "2-4", "step": 1}, {"id": "detskoe_3de8b5", "name": "Детский стиральный порошок", "unit": "кг", "hint": "1,5-3", "step": 0.5}, {"id": "detskoe_9b20b6", "name": "Детское пюре", "unit": "шт", "hint": "5-10", "step": 1}, {"id": "detskoe_b52c47", "name": "Каша детская", "unit": "пачка", "hint": "1-2", "step": 1}]}];
+var ABOUT     = [{"id": "name", "label": "Имя", "type": "text", "required": true, "hint": "Можно без фамилии"}, {"id": "phone", "label": "Телефон", "type": "tel", "required": true, "hint": "Если понадобится что-то уточнить"}, {"id": "email", "label": "Почта", "type": "email", "required": false, "hint": "Та же, на которую пришло письмо"}, {"id": "address", "label": "Адрес доставки", "type": "text", "required": true, "hint": "Город, улица, дом, подъезд и квартира"}, {"id": "adults", "label": "Сколько взрослых в семье", "type": "number", "required": false}, {"id": "kids", "label": "Сколько детей и их возраст", "type": "text", "required": false, "hint": "Например: 4: 12, 9, 5 и 2 года"}, {"id": "day", "label": "Удобный день доставки", "type": "choice", "required": true, "options": ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]}, {"id": "time", "label": "Удобное время", "type": "choice", "required": true, "options": ["Первая половина дня, до 14:00", "Вторая половина дня, после 14:00"]}, {"id": "call", "label": "Можно позвонить и уточнить заказ?", "type": "choice", "required": false, "options": ["Да", "Лучше напишите"]}];
+var FINAL     = [{"id": "missing_all", "label": "Чего не хватило во всей анкете?", "hint": "Что ещё возите домой регулярно, а мы не спросили."}, {"id": "important", "label": "Что для вас важнее всего в продуктах?", "hint": "Цена, качество, состав, срок годности - напишите своими словами."}];
+var STEPS     = ["Вы заполняете эту анкету.", "Мы звоним и уточняем корзину.", "Возвращаемся с ценами, вы подтверждаете заказ.", "Закупаем и привозим в выбранный день."];
+var LABELS    = {"extra": "Чего не хватило в этом разделе?", "extraHint": "Напишите свободно: что ещё возите домой из этой категории и сколько. Добавим это в следующую закупку.", "brand": "Пожелания по маркам в этом разделе", "brandHint": "По желанию. Пишите точно, как на упаковке. Если марки нет - опишите словами: жирность, сорт, размер.", "packShort": "Округляем до упаковки в меньшую сторону, а если недобор больше 30% - добавляем ещё одну."};
+
+var params = new URLSearchParams(location.search);
+var UID = params.get("uid") || params.get("id") || "guest";
+var KEY = "savvy_anketa_v1_" + UID;
+
+var state = {about:{}, qty:{}, brand:{}, extra:{}, final:{}};
+var saveTimer = null, sentOnce = false;
+
+/* ---------- хранилище ---------- */
+function load(){
+  try{
+    var raw = localStorage.getItem(KEY);
+    if(raw){ var d = JSON.parse(raw); for(var k in d){ if(state[k]) state[k] = d[k]; } }
+  }catch(e){ /* приватный режим - работаем без сохранения */ }
+  var pre = {name:params.get("name"), email:params.get("email"), phone:params.get("phone")};
+  for(var f in pre){ if(pre[f] && !state.about[f]) state.about[f] = pre[f]; }
+}
+function save(){
+  try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){ return; }
+  var el = document.getElementById("saved");
+  el.hidden = false;
+  document.getElementById("savedText").textContent = "черновик сохранён";
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(function(){ el.hidden = true; }, 2200);
+}
+
+/* ---------- утилиты ---------- */
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+function num(v){
+  if(v === undefined || v === null) return 0;
+  var n = parseFloat(String(v).replace(",", ".").trim());
+  return isNaN(n) || n < 0 ? 0 : n;
+}
+function fmt(n){ return String(n).replace(".", ","); }
+
+/* ---------- отрисовка ---------- */
+function render(){
+  var html = "";
+
+  html += '<section><button class="sec-head" type="button" aria-expanded="true" data-toggle="about">' +
+          'О вашей семье<span class="chev">&#9650;</span></button>' +
+          '<div class="sec-body open" id="body-about">';
+  ABOUT.forEach(function(f){
+    var v = state.about[f.id] || "";
+    html += '<div class="field" id="fld-' + f.id + '">';
+    html += '<label for="in-' + f.id + '">' + esc(f.label) + (f.required ? ' *' : '') + '</label>';
+    if(f.hint) html += '<small>' + esc(f.hint) + '</small>';
+    if(f.type === "choice"){
+      html += '<div class="choice" data-about="' + f.id + '">';
+      f.options.forEach(function(o){
+        html += '<button type="button" data-val="' + esc(o) + '" aria-pressed="' +
+                (v === o ? "true" : "false") + '">' + esc(o) + '</button>';
+      });
+      html += '</div>';
+    } else {
+      html += '<input id="in-' + f.id + '" type="' + f.type + '" data-about="' + f.id +
+              '" value="' + esc(v) + '"' +
+              (f.type === "number" ? ' inputmode="numeric"' : '') + '>';
+    }
+    html += '</div>';
+  });
+  html += '</div></section>';
+
+  CATALOG.forEach(function(cat){
+    var open = false;
+    html += '<section>';
+    html += '<button class="sec-head" type="button" aria-expanded="' + open + '" data-toggle="' + cat.id + '">' +
+            esc(cat.title) +
+            (cat.isNew ? ' <span class="tag-new">добавили</span>' : '') +
+            '<span class="cnt" id="cnt-' + cat.id + '">0</span>' +
+            '<span class="chev">&#9650;</span></button>';
+    html += '<div class="sec-body" id="body-' + cat.id + '">';
+    html += '<div class="pack-note"><b>Фасовка.</b> ' + esc(LABELS.packShort) + '</div>';
+    cat.items.forEach(function(it){
+      var v = state.qty[it.id] || "";
+      html += '<div class="item' + (num(v) ? ' filled' : '') + '" id="row-' + it.id + '">' +
+                '<div class="nm"><span>' + esc(it.name) + '</span>' +
+                  '<small>обычно берут ' + esc(it.hint) + ' ' + esc(it.unit) + '</small></div>' +
+                '<div class="stepper">' +
+                  '<button type="button" data-step="-1" data-id="' + it.id + '" aria-label="меньше">&minus;</button>' +
+                  '<input class="qty' + (num(v) ? ' on' : '') + '" inputmode="decimal" ' +
+                    'data-qty="' + it.id + '" value="' + esc(v) + '" placeholder="0" ' +
+                    'aria-label="' + esc(it.name) + ', ' + esc(it.unit) + '">' +
+                  '<button type="button" data-step="1" data-id="' + it.id + '" aria-label="больше">+</button>' +
+                '</div>' +
+                '<div class="unit">' + esc(it.unit) + '</div>' +
+              '</div>';
+    });
+    html += '<div class="free">' +
+              '<label for="ex-' + cat.id + '">' + esc(LABELS.extra) + '</label>' +
+              '<small>' + esc(LABELS.extraHint) + '</small>' +
+              '<textarea id="ex-' + cat.id + '" data-extra="' + cat.id + '">' +
+                esc(state.extra[cat.id] || "") + '</textarea>' +
+            '</div>';
+    html += '<div class="free">' +
+              '<label for="br-' + cat.id + '">' + esc(LABELS.brand) + '</label>' +
+              '<small>' + esc(LABELS.brandHint) + ' ' + esc(cat.brand) + '</small>' +
+              '<textarea id="br-' + cat.id + '" data-brand="' + cat.id + '">' +
+                esc(state.brand[cat.id] || "") + '</textarea>' +
+            '</div>';
+    html += '</div></section>';
+  });
+
+  html += '<section><button class="sec-head" type="button" aria-expanded="false" data-toggle="final">' +
+          'И последнее<span class="chev">&#9650;</span></button>' +
+          '<div class="sec-body" id="body-final">';
+  FINAL.forEach(function(f){
+    html += '<div class="field"><label for="fn-' + f.id + '">' + esc(f.label) + '</label>' +
+            '<small>' + esc(f.hint) + '</small>' +
+            '<textarea id="fn-' + f.id + '" data-final="' + f.id + '">' +
+              esc(state.final[f.id] || "") + '</textarea></div>';
+  });
+  html += '</div></section>';
+
+  document.getElementById("app").innerHTML = html;
+  document.getElementById("nextSteps").innerHTML =
+    STEPS.map(function(s){ return "<li>" + esc(s) + "</li>"; }).join("");
+  recount();
+}
+
+/* ---------- пересчёт ---------- */
+function recount(){
+  var total = 0;
+  CATALOG.forEach(function(cat){
+    var n = 0;
+    cat.items.forEach(function(it){ if(num(state.qty[it.id])) n++; });
+    total += n;
+    var badge = document.getElementById("cnt-" + cat.id);
+    if(badge){ badge.textContent = n; badge.className = "cnt" + (n ? " on" : ""); }
+  });
+  var all = CATALOG.reduce(function(s,c){ return s + c.items.length; }, 0);
+  var pct = Math.min(100, Math.round(total / Math.max(1, all) * 100 * 4)); // 25% каталога = полная полоса
+  document.getElementById("progress").style.width = pct + "%";
+  document.getElementById("dockCount").textContent =
+    total + " " + plural(total, ["позиция","позиции","позиций"]);
+  document.getElementById("progressText").textContent = total
+    ? "Отмечено " + total + " " + plural(total, ["позиция","позиции","позиций"]) + " - можно отправлять"
+    : "Заполните то, что нужно вашей семье";
+  return total;
+}
+function plural(n, f){
+  var n10 = n % 10, n100 = n % 100;
+  if(n10 === 1 && n100 !== 11) return f[0];
+  if(n10 >= 2 && n10 <= 4 && (n100 < 10 || n100 >= 20)) return f[1];
+  return f[2];
+}
+
+/* ---------- события ---------- */
+document.addEventListener("click", function(e){
+  var t = e.target.closest("[data-toggle]");
+  if(t){
+    var body = document.getElementById("body-" + t.dataset.toggle);
+    var open = body.classList.toggle("open");
+    t.setAttribute("aria-expanded", open ? "true" : "false");
+    if(open) setTimeout(function(){
+      t.scrollIntoView({behavior:"smooth", block:"start"});
+    }, 60);
+    return;
+  }
+  var st = e.target.closest("[data-step]");
+  if(st){
+    var id = st.dataset.id, dir = parseInt(st.dataset.step, 10);
+    var item = findItem(id);
+    var step = item.step || ((item.unit === "кг" || item.unit === "л") ? 0.5 : 1);
+    var v = Math.max(0, Math.round((num(state.qty[id]) + dir * step) * 100) / 100);
+    setQty(id, v ? fmt(v) : "");
+    var input = document.querySelector('[data-qty="' + id + '"]');
+    if(input) input.value = state.qty[id] || "";
+    paintRow(id);
+    save(); recount();
+    return;
+  }
+  var ch = e.target.closest("[data-about] button");
+  if(ch){
+    var wrap = ch.parentElement, fid = wrap.dataset.about;
+    state.about[fid] = ch.dataset.val;
+    Array.prototype.forEach.call(wrap.children, function(b){
+      b.setAttribute("aria-pressed", b === ch ? "true" : "false");
+    });
+    var fld = document.getElementById("fld-" + fid);
+    if(fld) fld.classList.remove("err");
+    save();
+  }
+});
+
+document.addEventListener("input", function(e){
+  var el = e.target;
+  if(el.dataset.qty !== undefined){
+    setQty(el.dataset.qty, el.value);
+    paintRow(el.dataset.qty);
+    save(); recount();
+  } else if(el.dataset.about !== undefined){
+    state.about[el.dataset.about] = el.value;
+    var fld = document.getElementById("fld-" + el.dataset.about);
+    if(fld) fld.classList.remove("err");
+    save();
+  } else if(el.dataset.extra !== undefined){
+    state.extra[el.dataset.extra] = el.value; save();
+  } else if(el.dataset.brand !== undefined){
+    state.brand[el.dataset.brand] = el.value; save();
+  } else if(el.dataset.final !== undefined){
+    state.final[el.dataset.final] = el.value; save();
+  }
+});
+
+function setQty(id, raw){
+  var v = String(raw).replace(/[^0-9.,]/g, "");
+  if(!num(v)) delete state.qty[id]; else state.qty[id] = v;
+}
+function paintRow(id){
+  var row = document.getElementById("row-" + id);
+  var input = document.querySelector('[data-qty="' + id + '"]');
+  var on = !!num(state.qty[id]);
+  if(row) row.classList.toggle("filled", on);
+  if(input) input.classList.toggle("on", on);
+}
+function findItem(id){
+  for(var i = 0; i < CATALOG.length; i++){
+    var items = CATALOG[i].items;
+    for(var j = 0; j < items.length; j++){ if(items[j].id === id) return items[j]; }
+  }
+  return {unit:"шт"};
+}
+
+/* ---------- сборка и отправка заказа ---------- */
+function collect(){
+  var order = {
+    uid: UID,
+    sentAt: new Date().toISOString(),
+    about: state.about,
+    items: [],
+    extra: {},
+    brands: {},
+    final: state.final
+  };
+  CATALOG.forEach(function(cat){
+    cat.items.forEach(function(it){
+      var q = num(state.qty[it.id]);
+      if(q) order.items.push({id:it.id, category:cat.title, name:it.name, qty:q, unit:it.unit});
+    });
+    if((state.extra[cat.id] || "").trim()) order.extra[cat.title] = state.extra[cat.id].trim();
+    if((state.brand[cat.id] || "").trim()) order.brands[cat.title] = state.brand[cat.id].trim();
+  });
+  return order;
+}
+function asText(o){
+  var L = [];
+  L.push("ЗАКАЗ SAVVY");
+  L.push("Имя: " + (o.about.name || "-"));
+  L.push("Телефон: " + (o.about.phone || "-"));
+  if(o.about.email) L.push("Почта: " + o.about.email);
+  L.push("Адрес: " + (o.about.address || "-"));
+  L.push("Семья: взрослых " + (o.about.adults || "-") + ", дети: " + (o.about.kids || "-"));
+  L.push("Доставка: " + (o.about.day || "-") + ", " + (o.about.time || "-"));
+  L.push("Звонок: " + (o.about.call || "-"));
+  L.push("");
+  var cat = "";
+  o.items.forEach(function(it){
+    if(it.category !== cat){ cat = it.category; L.push("-- " + cat); }
+    L.push("  " + it.name + " - " + fmt(it.qty) + " " + it.unit);
+  });
+  L.push("");
+  for(var k in o.extra) L.push("Ещё нужно (" + k + "): " + o.extra[k]);
+  for(var b in o.brands) L.push("Марки (" + b + "): " + o.brands[b]);
+  for(var f in o.final){ if(o.final[f]) L.push(f + ": " + o.final[f]); }
+  return L.join("\n");
+}
+function validate(){
+  var bad = [];
+  ABOUT.forEach(function(f){
+    if(!f.required) return;
+    var v = (state.about[f.id] || "").trim();
+    if(!v){
+      bad.push(f.label);
+      var fld = document.getElementById("fld-" + f.id);
+      if(fld) fld.classList.add("err");
+    }
+  });
+  return bad;
+}
+function modal(html){
+  document.getElementById("modalBody").innerHTML = html;
+  document.getElementById("modal").classList.add("open");
+}
+document.getElementById("modalClose").onclick = function(){
+  document.getElementById("modal").classList.remove("open");
+};
+
+document.getElementById("send").onclick = function(){
+  var total = recount();
+  var bad = validate();
+  if(bad.length){
+    var about = document.getElementById("body-about");
+    if(about && !about.classList.contains("open"))
+      document.querySelector('[data-toggle="about"]').click();
+    modal('<h2>Не хватает данных</h2><p>Без этого мы не соберём и не привезём заказ:</p>' +
+          '<ul class="err-list">' + bad.map(function(b){ return "<li>" + esc(b) + "</li>"; }).join("") + '</ul>');
+    return;
+  }
+  if(!total){
+    modal('<h2>Заказ пустой</h2><p>Поставьте количество хотя бы у одной позиции - ' +
+          'или напишите в свободном поле, что вам нужно.</p>');
+    return;
+  }
+  if(!consentEl.checked){
+    document.getElementById("consentBox").classList.add("err");
+    document.getElementById("consentBox").scrollIntoView({behavior:"smooth", block:"center"});
+    modal('<h2>Нужно согласие</h2><p>Отметьте согласие на обработку данных - ' +
+          'без него мы не имеем права принимать имя и телефон.</p>');
+    return;
+  }
+  var order = collect();
+  var btn = this;
+  btn.disabled = true; btn.textContent = "Отправляем...";
+
+  function done(ok, msg){
+    btn.disabled = false; btn.textContent = "Отправить заказ";
+    if(ok){
+      sentOnce = true;
+      modal('<h2>Заказ принят</h2><p>' + esc(msg) + '</p>' +
+            '<p>Мы сведём ваши пожелания с заказами других семей, узнаем оптовые цены ' +
+            'и вернёмся со списком. Платить пока ничего не нужно.</p>');
+    } else {
+      fallback(order, msg);
+    }
+  }
+  if(CONFIG.submitUrl){
+    fetch(CONFIG.submitUrl, {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify(order)
+    }).then(function(r){
+      if(!r.ok) throw new Error("HTTP " + r.status);
+      done(true, "Спасибо! Ваш список у нас.");
+    }).catch(function(err){
+      done(false, "Не получилось отправить автоматически (" + err.message + ").");
+    });
+  } else {
+    done(false, "");
+  }
+};
+
+function fallback(order, why){
+  var text = asText(order);
+  var head = why ? "<p>" + esc(why) + "</p>" : "";
+  modal('<h2>Ваш заказ готов</h2>' + head +
+        '<p>Скопируйте его и пришлите нам ответом на письмо' +
+        (CONFIG.fallbackEmail ? " (" + esc(CONFIG.fallbackEmail) + ")" : "") +
+        ' - или сохраните файлом.</p>' +
+        '<pre id="orderText">' + esc(text) + '</pre>' +
+        '<div class="row">' +
+          '<button class="btn" id="copyBtn">Скопировать</button>' +
+          '<button class="btn ghost" id="dlBtn">Скачать</button>' +
+        '</div>');
+  document.getElementById("copyBtn").onclick = function(){
+    var b = this;
+    var ok = function(){ b.textContent = "Скопировано"; };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(ok, selectText);
+    } else selectText();
+  };
+  document.getElementById("dlBtn").onclick = function(){
+    var blob = new Blob([text], {type:"text/plain;charset=utf-8"});
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "zakaz-savvy.txt";
+    a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+  };
+  function selectText(){
+    var pre = document.getElementById("orderText");
+    var r = document.createRange(); r.selectNodeContents(pre);
+    var s = getSelection(); s.removeAllRanges(); s.addRange(r);
+  }
+}
+
+/* ---------- согласие на обработку персональных данных ---------- */
+var consentEl = document.getElementById("consent");
+(function initConsent(){
+  var link = CONFIG.policyUrl
+    ? ' <a href="' + CONFIG.policyUrl + '" target="_blank" rel="noopener">Политика обработки данных</a>.'
+    : '';
+  document.getElementById("consentText").innerHTML =
+    'Согласен на обработку персональных данных: имя, телефон и адрес нужны, ' +
+    'чтобы собрать заказ и привезти его.' + link;
+  consentEl.addEventListener("change", function(){
+    state.about.consent = consentEl.checked;
+    document.getElementById("consentBox").classList.remove("err");
+    save();
+  });
+})();
+
+document.getElementById("reset").onclick = function(){
+  if(!confirm("Стереть все ответы и начать заново?")) return;
+  try{ localStorage.removeItem(KEY); }catch(e){}
+  state = {about:{}, qty:{}, brand:{}, extra:{}, final:{}};
+  consentEl.checked = false;
+  render();
+  scrollTo({top:0, behavior:"smooth"});
+};
+
+window.addEventListener("beforeunload", function(e){
+  if(Object.keys(state.qty).length && !sentOnce){ /* черновик уже сохранён, молча уходим */ }
+});
+
+/* ---------- старт ---------- */
+load();
+consentEl.checked = !!state.about.consent;   // после load, иначе черновик ещё пуст
+if(CONFIG.loadUrl && UID !== "guest"){
+  fetch(CONFIG.loadUrl + (CONFIG.loadUrl.indexOf("?") < 0 ? "?" : "&") + "uid=" + encodeURIComponent(UID))
+    .then(function(r){ return r.ok ? r.json() : null; })
+    .then(function(d){ if(d && d.qty){ state = Object.assign(state, d); render(); } })
+    .catch(function(){});
+}
+render();
+</script>
+</body>
+</html>
