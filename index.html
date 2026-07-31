@@ -215,8 +215,9 @@ section{background:var(--white);border:1px solid var(--rule);border-radius:14px;
    режиме: показывает готовый заказ, который можно скопировать или скачать.
    ========================================================================== */
 var CONFIG = {
-  submitUrl: "",                  // URL приёма заказа, POST JSON
-  loadUrl:   "",                  // GET ?uid=... - вернуть сохранённый черновик
+  submitUrl: "",    // URL приёма заказа, POST с телом-JSON
+  loadUrl:   "",      // GET ?uid=... - вернуть последний заказ семьи
+  secret:    "J_iMUPM1ENIRnPn-",        // отсекает случайных ботов, не защита данных
   fallbackEmail: "zakaz@savifood.ru",
   policyUrl: ""                   // ссылка на политику обработки данных на сайте
 };
@@ -454,6 +455,7 @@ function findItem(id){
 /* ---------- сборка и отправка заказа ---------- */
 function collect(){
   var order = {
+    secret: CONFIG.secret,
     uid: UID,
     sentAt: new Date().toISOString(),
     about: state.about,
@@ -554,8 +556,9 @@ document.getElementById("send").onclick = function(){
     }
   }
   if(CONFIG.submitUrl){
+    // text/plain - чтобы браузер не слал preflight: Apps Script на OPTIONS не отвечает
     fetch(CONFIG.submitUrl, {
-      method:"POST", headers:{"Content-Type":"application/json"},
+      method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"},
       body: JSON.stringify(order)
     }).then(function(r){
       if(!r.ok) throw new Error("HTTP " + r.status);
