@@ -1,43 +1,94 @@
 <!DOCTYPE html>
-<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Список покупок</title>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>SAVVY</title>
 <style>
-body{font-family:system-ui,sans-serif;background:#f6f1e7;color:#222;margin:0;padding:16px;max-width:600px;margin:auto}
-h1{font-size:22px;margin:8px 0 4px}
-.sum{color:#555;font-size:15px;margin-bottom:12px}
-h2{font-size:15px;color:#777;margin:18px 0 6px;text-transform:uppercase;letter-spacing:.05em}
-label{display:flex;align-items:center;gap:12px;background:#fff;border-radius:10px;padding:12px 14px;margin-bottom:6px;font-size:17px;cursor:pointer}
-input{width:24px;height:24px;flex:none}
-label.done{opacity:.45;text-decoration:line-through}
-.p{margin-left:auto;color:#555;white-space:nowrap;font-size:15px}
-button{margin-top:20px;background:none;border:1px solid #bbb;border-radius:8px;padding:8px 14px;font-size:14px;color:#555}
+*{box-sizing:border-box}
+body{font-family:system-ui,-apple-system,sans-serif;background:#f6f1e7;color:#222;margin:0;
+     padding:0;min-height:100vh;display:flex;align-items:center;justify-content:center}
+.dver{max-width:340px;width:100%;padding:26px 22px;text-align:center}
+h1{font-size:20px;margin:0 0 6px;color:#8a6d3b}
+.pod{color:#666;font-size:14px;line-height:1.45;margin-bottom:20px}
+input{font-size:30px;letter-spacing:14px;text-align:center;padding:12px 10px 12px 24px;
+      border:2px solid #d8cdb4;border-radius:12px;width:100%;background:#fff;color:#222}
+input:focus{outline:none;border-color:#8a6d3b}
+.osh{color:#b3261e;font-size:14px;min-height:20px;margin-top:12px;line-height:1.4}
+.zhdi{color:#8a6d3b;font-size:14px;min-height:20px;margin-top:12px}
+.snoska{color:#999;font-size:12px;margin-top:22px;line-height:1.45}
 </style></head><body>
-<h1>Список покупок</h1>
-<div class="sum" id="sum"></div>
-<div id="list"></div>
-<button onclick="if(confirm('Снять все галочки?')){localStorage.removeItem('pokupki');render()}">Сбросить галочки</button>
+<div class="dver">
+  <h1>Рабочий лист SAVVY</h1>
+  <div class="pod">Введите код из четырёх цифр.</div>
+  <input id="kod" inputmode="numeric" pattern="[0-9]*" maxlength="4"
+         autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Код">
+  <div class="osh" id="osh"></div>
+  <div class="snoska">Код запомнится в этом браузере - на других листах вводить не придётся.</div>
+</div>
 <script>
-const G=[
- ["Овощи и зелень",[
-  ["Картошка 5 кг",400],["Помидоры ящик 4 кг",800],["Огурцы 4 кг",300],["Перец",500],
-  ["Лук крымский 2 кг",360],["Грибы 3 кг (ящик)",1000],["Зелень",1000]]],
- ["Фрукты",[
-  ["Лимон 1 кг",120],["Арбуз",0],["Яблоки 2 кг",0],["Бананы 2 кг",0],["Киви 1 кг",0]]],
- ["Остальное",[
-  ["Рис иранский, минимум 5 кг",0],["Лепёшки 5 шт",500],["Лаваш 5 шт",0],["Посуда одноразовая",0]]],
- ["Мясо и рыба - в последнюю очередь",[
-  ["Корейка баранья 2 кг",2700],["Курица филе 2 кг",0],["Сёмга стейками 4 кг (или форель 5 500)",5600]]]
-];
-function load(){try{return JSON.parse(localStorage.getItem('pokupki')||'{}')}catch(e){return{}}}
-function render(){
- const st=load();let h='',tot=0,done=0,n=0;
- G.forEach(([t,items])=>{h+='<h2>'+t+'</h2>';items.forEach(([name,price])=>{
-  const on=!!st[name];n++;if(on)done++;tot+=price;
-  h+='<label class="'+(on?'done':'')+'"><input type="checkbox" '+(on?'checked':'')+' onchange="tg(this,'+JSON.stringify(name)+')">'+name+(price?'<span class="p">'+price.toLocaleString('ru')+' ₽</span>':'')+'</label>';
- })});
- document.getElementById('list').innerHTML=h;
- document.getElementById('sum').textContent='Куплено '+done+' из '+n+'. По ценам - '+tot.toLocaleString('ru')+' ₽, остальное прикидочно ещё ~4 000 ₽.';
+var SOL = "GPL9Cox5UyIYLbBz6e6FSg==", VEKTOR = "pQhI01JApKuMFD/V", SHIFR = "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";
+var POVTORY = 310000, KLYUCH_KODA = "savvy-vhod";
+
+function izBase64(s){
+  var dv = atob(s), b = new Uint8Array(dv.length);
+  for (var i = 0; i < dv.length; i++) b[i] = dv.charCodeAt(i);
+  return b;
 }
-function tg(el,name){const st=load();if(el.checked)st[name]=1;else delete st[name];try{localStorage.setItem('pokupki',JSON.stringify(st))}catch(e){}render()}
-render();
-</script></body></html>
+
+// Ключ из кода. Медленно намеренно: чем дороже один перебор, тем дороже все десять тысяч.
+function klyuch(kod){
+  var enc = new TextEncoder();
+  return crypto.subtle.importKey("raw", enc.encode(kod), "PBKDF2", false, ["deriveKey"])
+    .then(function(osnova){
+      return crypto.subtle.deriveKey(
+        {name:"PBKDF2", salt:izBase64(SOL), iterations:POVTORY, hash:"SHA-256"},
+        osnova, {name:"AES-GCM", length:256}, false, ["decrypt"]);
+    });
+}
+
+// Проверка кода - это и есть расшифровка. Отдельной проверки нет и быть не должно:
+// иначе в файле пришлось бы хранить, с чем сравнивать.
+function otkryt(kod){
+  return klyuch(kod).then(function(k){
+    return crypto.subtle.decrypt({name:"AES-GCM", iv:izBase64(VEKTOR)}, k, izBase64(SHIFR));
+  }).then(function(bayty){
+    return new TextDecoder().decode(bayty);
+  });
+}
+
+function narisovat(html){
+  try { localStorage.setItem(KLYUCH_KODA, window.__kod); } catch(e){}
+  document.open(); document.write(html); document.close();
+}
+
+var pole = document.getElementById("kod"), osh = document.getElementById("osh");
+
+function poprobovat(kod, tiho){
+  window.__kod = kod;
+  osh.className = "zhdi"; osh.textContent = "Открываю...";
+  return otkryt(kod).then(narisovat).catch(function(){
+    osh.className = "osh";
+    if (tiho) {
+      // Запомненный код не подошёл: его сменили. Забываем и спрашиваем заново.
+      try { localStorage.removeItem(KLYUCH_KODA); } catch(e){}
+      osh.textContent = "";
+    } else {
+      osh.textContent = "Не подходит";
+      pole.value = ""; pole.focus();
+    }
+  });
+}
+
+pole.addEventListener("input", function(){
+  pole.value = pole.value.replace(/[^0-9]/g, "");
+  osh.textContent = "";
+  if (pole.value.length === 4) poprobovat(pole.value, false);
+});
+
+// Уже открывали на этом устройстве - открываем молча.
+var zapomnennyy = null;
+try { zapomnennyy = localStorage.getItem(KLYUCH_KODA); } catch(e){}
+if (zapomnennyy && /^[0-9]{4}$/.test(zapomnennyy)) poprobovat(zapomnennyy, true);
+else pole.focus();
+</script>
+</body></html>
