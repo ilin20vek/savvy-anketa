@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Список покупок</title>
+<style>
+body{font-family:system-ui,sans-serif;background:#f6f1e7;color:#222;margin:0;padding:16px;max-width:600px;margin:auto}
+h1{font-size:22px;margin:8px 0 4px}
+.sum{color:#555;font-size:15px;margin-bottom:12px}
+h2{font-size:15px;color:#777;margin:18px 0 6px;text-transform:uppercase;letter-spacing:.05em}
+label{display:flex;align-items:center;gap:12px;background:#fff;border-radius:10px;padding:12px 14px;margin-bottom:6px;font-size:17px;cursor:pointer}
+input{width:24px;height:24px;flex:none}
+label.done{opacity:.45;text-decoration:line-through}
+.p{margin-left:auto;color:#555;white-space:nowrap;font-size:15px}
+button{margin-top:20px;background:none;border:1px solid #bbb;border-radius:8px;padding:8px 14px;font-size:14px;color:#555}
+</style></head><body>
+<h1>Список покупок</h1>
+<div class="sum" id="sum"></div>
+<div id="list"></div>
+<button onclick="if(confirm('Снять все галочки?')){localStorage.removeItem('pokupki');render()}">Сбросить галочки</button>
+<script>
+const G=[
+ ["Овощи и зелень",[
+  ["Картошка 5 кг",400],["Помидоры ящик 4 кг",800],["Огурцы 4 кг",300],["Перец",500],
+  ["Лук крымский 2 кг",360],["Грибы 3 кг (ящик)",1000],["Зелень",1000]]],
+ ["Фрукты",[
+  ["Лимон 1 кг",120],["Арбуз",0],["Яблоки 2 кг",0],["Бананы 2 кг",0],["Киви 1 кг",0]]],
+ ["Остальное",[
+  ["Рис иранский, минимум 5 кг",0],["Лепёшки 5 шт",500],["Лаваш 5 шт",0],["Посуда одноразовая",0]]],
+ ["Мясо и рыба - в последнюю очередь",[
+  ["Корейка баранья 2 кг",2700],["Курица филе 2 кг",0],["Сёмга стейками 4 кг (или форель 5 500)",5600]]]
+];
+function load(){try{return JSON.parse(localStorage.getItem('pokupki')||'{}')}catch(e){return{}}}
+function render(){
+ const st=load();let h='',tot=0,done=0,n=0;
+ G.forEach(([t,items])=>{h+='<h2>'+t+'</h2>';items.forEach(([name,price])=>{
+  const on=!!st[name];n++;if(on)done++;tot+=price;
+  h+='<label class="'+(on?'done':'')+'"><input type="checkbox" '+(on?'checked':'')+' onchange="tg(this,'+JSON.stringify(name)+')">'+name+(price?'<span class="p">'+price.toLocaleString('ru')+' ₽</span>':'')+'</label>';
+ })});
+ document.getElementById('list').innerHTML=h;
+ document.getElementById('sum').textContent='Куплено '+done+' из '+n+'. По ценам - '+tot.toLocaleString('ru')+' ₽, остальное прикидочно ещё ~4 000 ₽.';
+}
+function tg(el,name){const st=load();if(el.checked)st[name]=1;else delete st[name];try{localStorage.setItem('pokupki',JSON.stringify(st))}catch(e){}render()}
+render();
+</script></body></html>
