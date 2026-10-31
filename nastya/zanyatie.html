@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Занятие с Анастасией Ильиной</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Комната занятия с логопедом Анастасией Ильиной: видеосвязь прямо в браузере, без установки программ.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:title" content="Занятие с Анастасией Ильиной">
+<meta property="og:description" content="Видеосвязь прямо в браузере, без установки программ.">
+<meta property="og:url" content="https://ilin20vek.github.io/savvy-anketa/nastya/zanyatie.html">
+<meta property="og:image" content="https://ilin20vek.github.io/savvy-anketa/nastya/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="theme-color" content="#F8F4EC">
+<style>
+/* Те же шрифты и цвета, что на главной (index.html): меняются в обоих файлах сразу. */
+@font-face{font-family:"Lora";font-style:normal;font-weight:400 700;font-display:swap;src:url(fonts/lora-cyr.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"Lora";font-style:normal;font-weight:400 700;font-display:swap;src:url(fonts/lora-lat.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Source Sans 3";font-style:normal;font-weight:400 700;font-display:swap;src:url(fonts/sourcesans3-cyr.woff2) format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:"Source Sans 3";font-style:normal;font-weight:400 700;font-display:swap;src:url(fonts/sourcesans3-lat.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+
+:root{
+  --paper:#F8F4EC;
+  --card:#FFFDF8;
+  --ink:#1E2A2E;
+  --muted:#505B5E;
+  --accent:#1D5E6A;
+  --accent-d:#164C56;
+  --tint:#E5EEEC;
+  --rule:#E2D9CB;
+  --field:#7D776D;
+  --serif:"Lora","PT Serif",Georgia,serif;
+  --sans:"Source Sans 3","PT Sans",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 18px/1.55 var(--sans);font-feature-settings:"lnum" 1}
+a{color:var(--accent);text-underline-offset:3px}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+p{margin:0 0 12px}
+[hidden]{display:none}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:56px;padding:12px 26px;background:var(--accent);color:#fff;font:600 19px/1.2 var(--sans);text-decoration:none;border-radius:8px;border:2px solid var(--accent);cursor:pointer}
+.btn:hover{background:var(--accent-d);border-color:var(--accent-d)}
+.btn.line{background:transparent;color:var(--accent)}
+.btn.line:hover{background:var(--tint)}
+
+/* шапка */
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--rule)}
+.top h1{margin:0;font:600 19px/1.2 var(--serif)}
+.top a{font-size:17px;white-space:nowrap}
+
+/* вход: код и имя */
+.vhod{padding:28px 0 40px}
+.vhod label{display:block;font:600 26px/1.2 var(--serif);margin:0 0 8px}
+.vhod .pole{margin:0 0 22px}
+.vhod .pod{color:var(--muted);margin:0 0 12px}
+.ryad{display:flex;gap:10px;flex-wrap:wrap}
+.ryad input{flex:1 1 220px;min-width:0}
+input[type=text]{font:400 20px/1.3 var(--sans);color:var(--ink);background:#fff;border:1.5px solid var(--field);border-radius:8px;padding:13px 14px;min-height:56px;width:100%}
+input:focus{outline:3px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+.vhod .btn{width:100%}
+.oshibka{color:#9A2A1F;font-weight:600;margin:12px 0 0}
+
+/* подсказки и комната */
+.podskazki{list-style:none;margin:0;padding:16px 0 14px;display:grid;gap:10px;counter-reset:p}
+.podskazki li{counter-increment:p;position:relative;padding-left:44px;font-size:20px;line-height:1.35;font-weight:600}
+.podskazki li::before{content:counter(p);position:absolute;left:0;top:-1px;width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;font:600 18px/32px var(--serif);text-align:center}
+.komnata{width:100%;height:75vh;height:75svh;min-height:440px;background:#161616}
+.komnata iframe{display:block;border:0}
+.otdelno{font-size:18px;margin:12px 0 0}
+.vyshli{padding:28px 0}
+.vyshli p{font-size:20px}
+
+/* для логопеда */
+.logoped{padding:28px 0 48px}
+details{border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;min-height:56px;font:600 20px/1.25 var(--serif)}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font:400 28px/1 var(--sans);color:var(--accent)}
+details[open] summary::after{content:"\2212"}
+.vnutri{padding:6px 0 20px}
+.vnutri > .btn{margin:0 0 16px}
+.gotovo{margin:0 0 18px}
+.gotovo label{display:block;font-weight:600;margin:0 0 6px}
+.gotovo input{font-size:17px}
+.gotovo .ryad .btn{flex:0 0 auto}
+.gotovo p{margin:10px 0 0}
+.skopirovano{color:var(--accent);font-weight:600}
+.vnutri .melko{font-size:16px;color:var(--muted)}
+
+@media (min-width:900px){
+  .wrap{padding:0 40px}
+  .top{padding:18px 0}
+  .top h1{font-size:22px}
+  .vhod{padding:48px 0 64px}
+  .vhod form{max-width:560px}
+  .vhod .btn{width:auto;min-width:180px}
+  .vhod label{font-size:30px}
+  .podskazki{grid-template-columns:repeat(3,1fr);gap:28px;padding:24px 0 20px}
+  .podskazki li{font-size:20px}
+  .komnata-ramka{max-width:1180px;margin:0 auto;padding:0 40px}
+  .komnata{height:78vh;min-height:560px;border-radius:10px;overflow:hidden}
+  .vnutri{max-width:760px}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <h1>Занятие с&nbsp;Анастасией Ильиной</h1>
+    <a href="index.html">на&nbsp;главную</a>
+  </header>
+</div>
+
+<main>
+
+  <!-- Подсказки: видны, когда код известен (?k= в адресе или введён в поле). -->
+  <section id="podskazki" hidden>
+    <div class="wrap">
+      <ol class="podskazki">
+        <li>Разрешите камеру и&nbsp;микрофон, когда спросит</li>
+        <li>Если написано, что встреча ещё не&nbsp;началась,&nbsp;- подождите минуту, я подключаюсь</li>
+        <li>Не&nbsp;получается&nbsp;- напишите мне в&nbsp;<a href="https://t.me/AnastasiaUri" target="_blank" rel="noopener">Телеграм</a>, пришлю запасную ссылку</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Вход: имя всегда, код - только если его нет в адресе. Прихожая Jitsi выключена, имя уходит в комнату отсюда. -->
+  <section class="vhod" id="vhod">
+    <div class="wrap">
+      <form action="zanyatie.html" method="get" id="forma-vhoda" novalidate>
+        <div class="pole" id="pole-koda">
+          <label for="kod">Код занятия</label>
+          <p class="pod">Перед занятием пришлю код комнаты.</p>
+          <input type="text" id="kod" name="k" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false">
+        </div>
+        <div class="pole">
+          <label for="imya">Как вас зовут</label>
+          <input type="text" id="imya" autocomplete="name">
+        </div>
+        <button class="btn" type="submit">Войти</button>
+        <p class="oshibka" id="oshibka-vhoda" role="alert" hidden></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- Комната. -->
+  <section class="zal" id="zal" hidden>
+    <div class="komnata-ramka">
+      <div class="komnata" id="komnata"></div>
+    </div>
+    <div class="wrap">
+      <p class="oshibka" id="ne-zagruzilas" role="alert" hidden>Комната не&nbsp;загрузилась.</p>
+      <!-- Адрес ссылки ставит скрипт: https://meet.jit.si/ilyina-<код>#... -->
+      <p class="otdelno">Не&nbsp;открылось&nbsp;- <a id="otdelno" target="_blank" rel="noopener">откройте комнату в&nbsp;отдельном окне</a></p>
+      <div class="vyshli" id="vyshli" hidden>
+        <p>Вы вышли из&nbsp;занятия.</p>
+        <a class="btn line" id="snova" href="zanyatie.html">Войти снова</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="logoped">
+    <div class="wrap">
+      <details id="dlya-logopeda">
+        <summary>Для&nbsp;логопеда</summary>
+        <div class="vnutri">
+          <button type="button" class="btn line" id="sozdat">Создать код занятия</button>
+          <div class="gotovo" id="gotovo" hidden>
+            <label for="ssylka">Ссылка для&nbsp;пациента</label>
+            <div class="ryad">
+              <input type="text" id="ssylka" readonly>
+              <button type="button" class="btn" id="kopirovat">Скопировать</button>
+            </div>
+            <p class="skopirovano" id="skopirovano" role="status" hidden>Скопировано</p>
+            <p><a id="otkryt" href="zanyatie.html">Открыть комнату</a></p>
+            <p>Запасная ссылка, комната вне сайта: <a id="pryamaya" target="_blank" rel="noopener"></a></p>
+          </div>
+          <p class="melko">Входите в&nbsp;комнату первой: meet.jit.si попросит того, кто открывает комнату, войти через Google, GitHub или&nbsp;Facebook. Остальные входят без&nbsp;регистрации.</p>
+          <p class="melko">Запасной путь&nbsp;- Яндекс Телемост: создайте встречу и&nbsp;пришлите ссылку.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+</main>
+
+<script>
+(function () {
+  // Код занятия: латиница, цифры, дефис. Кириллица переводится в латиницу, «Река 417» и «reka417» дают reka-417.
+  var TRANSLIT = {'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'e','ж':'zh','з':'z','и':'i','й':'y','к':'k','л':'l','м':'m','н':'n','о':'o','п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f','х':'h','ц':'ts','ч':'ch','ш':'sh','щ':'sch','ъ':'','ы':'y','ь':'','э':'e','ю':'yu','я':'ya'};
+  function kodIz(s) {
+    s = (s || '').toLowerCase().replace(/[а-яё]/g, function (b) { return TRANSLIT[b]; });
+    s = s.replace(/[^a-z0-9]+/g, '-').replace(/([a-z])([0-9])/g, '$1-$2').replace(/-+/g, '-').replace(/^-|-$/g, '');
+    return s.slice(0, 40);
+  }
+  // Слова для кода: русские, латиницей по той же таблице, чтобы код можно было продиктовать голосом.
+  var SLOVA = ['reka','pole','sad','les','luna','gora','more','sneg','lipa','rosa','zarya','ozero','klen','volna','tropa','mayak','kolos','bereg','dub','most','parus','ryabina','sosna','veter','raduga','oblako','vesna','leto','zima','osen'];
+
+  // Прямой адрес комнаты на meet.jit.si. Без настроек после # телефон показывает английский экран
+  // «Join in app / Join in browser»; с ними сразу комната, по-русски, без прихожей.
+  function pryamoyAdres(k, imya) {
+    var a = 'https://meet.jit.si/ilyina-' + k + '#config.disableDeepLinking=true&config.defaultLanguage=%22ru%22';
+    if (imya) a += '&config.prejoinConfig.enabled=false&userInfo.displayName=' + encodeURIComponent(JSON.stringify(imya));
+    return a;
+  }
+
+  var kod = kodIz(new URLSearchParams(location.search).get('k'));
+  var forma = document.getElementById('forma-vhoda');
+  var oshibka = document.getElementById('oshibka-vhoda');
+  var apiGotov = null;
+
+  function zagruzitApi() {                         // external_api.js грузится один раз
+    if (!apiGotov) apiGotov = new Promise(function (ok, ne) {
+      var s = document.createElement('script');
+      s.src = 'https://meet.jit.si/external_api.js';
+      s.onload = ok; s.onerror = ne;
+      document.head.appendChild(s);
+    });
+    return apiGotov;
+  }
+
+  if (kod) {                                       // код в адресе: спрашиваем только имя
+    document.getElementById('pole-koda').hidden = true;
+    document.getElementById('podskazki').hidden = false;
+    zagruzitApi().catch(function () {});
+  }
+
+  forma.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var k = kod || kodIz(document.getElementById('kod').value);
+    var imya = document.getElementById('imya').value.trim();
+    if (!k) { pokazatOshibku('Введите код из сообщения.', 'kod'); return; }
+    if (!imya) { pokazatOshibku('Напишите, как вас зовут.', 'imya'); return; }
+    oshibka.hidden = true;
+    if (!kod) { kod = k; history.replaceState(null, '', '?k=' + encodeURIComponent(k)); }
+    voyti(k, imya);
+  });
+
+  function pokazatOshibku(tekst, pole) {
+    oshibka.textContent = tekst;
+    oshibka.hidden = false;
+    document.getElementById(pole).focus();
+  }
+
+  function voyti(k, imya) {
+    document.getElementById('vhod').hidden = true;
+    document.getElementById('podskazki').hidden = false;
+    document.getElementById('zal').hidden = false;
+    document.getElementById('otdelno').href = pryamoyAdres(k, imya);
+    zagruzitApi().then(function () { otkrytKomnatu(k, imya); },
+                       function () { document.getElementById('ne-zagruzilas').hidden = false; });
+  }
+
+  function otkrytKomnatu(k, imya) {
+    var mesto = document.getElementById('komnata');
+    var api = new JitsiMeetExternalAPI('meet.jit.si', {
+      roomName: 'ilyina-' + k,
+      parentNode: mesto,
+      width: '100%',
+      height: '100%',
+      lang: 'ru',
+      userInfo: { displayName: imya },             // имя спросили на нашей странице
+      configOverwrite: {
+        defaultLanguage: 'ru',
+        prejoinPageEnabled: false,                 // прихожая Jitsi выключена
+        prejoinConfig: { enabled: false },
+        toolbarButtons: ['microphone', 'camera', 'desktop', 'chat', 'hangup'],
+        toolbarConfig: { alwaysVisible: true },
+        disableDeepLinking: true,
+        deeplinking: { disabled: true },
+        disableInviteFunctions: true,
+        enableWelcomePage: false,
+        enableClosePage: false,
+        disableThirdPartyRequests: true,
+        analytics: { disabled: true }
+      },
+      interfaceConfigOverwrite: {
+        MOBILE_APP_PROMO: false,
+        SHOW_CHROME_EXTENSION_BANNER: false
+      }
+    });
+    api.addListener('readyToClose', function () {
+      api.dispose();
+      mesto.hidden = true;
+      document.getElementById('snova').href = 'zanyatie.html?k=' + encodeURIComponent(k);
+      document.getElementById('vyshli').hidden = false;
+    });
+  }
+
+  // Для логопеда: код, ссылка на эту страницу и прямая запасная ссылка на meet.jit.si.
+  var ssylka = document.getElementById('ssylka');
+  var skopirovano = document.getElementById('skopirovano');
+  var osnova = location.href.split('#')[0].split('?')[0];
+  document.getElementById('sozdat').addEventListener('click', function () {
+    var slovo = SLOVA[Math.floor(Math.random() * SLOVA.length)];
+    var k = slovo + '-' + (100 + Math.floor(Math.random() * 900));
+    ssylka.value = osnova + '?k=' + k;
+    document.getElementById('otkryt').href = 'zanyatie.html?k=' + k;
+    var pr = document.getElementById('pryamaya');
+    pr.href = pryamoyAdres(k);
+    pr.textContent = 'meet.jit.si/ilyina-' + k;
+    document.getElementById('gotovo').hidden = false;
+    skopirovano.hidden = true;
+  });
+  document.getElementById('kopirovat').addEventListener('click', function () {
+    function zapasnoy() { ssylka.select(); try { document.execCommand('copy'); } catch (e) {} skopirovano.hidden = false; }
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(ssylka.value).then(function () { skopirovano.hidden = false; }, zapasnoy);
+    } else { zapasnoy(); }
+  });
+})();
+</script>
+</body>
+</html>
