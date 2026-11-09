@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Athos Travel &middot; Website Concepts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#100D0B; --bg2:#17120F; --gold:#C2A67D; --gold-lt:#E8D4A6;
+    --ink:#EDE6DB; --dim:#9B9488; --line:rgba(194,166,125,.22);
+    --ease:cubic-bezier(.22,.61,.36,1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:'Manrope',system-ui,sans-serif;font-weight:300;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .serif{font-family:'Cormorant Garamond',Georgia,serif}
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%}
+
+  header.top{text-align:center;padding:clamp(70px,13vh,140px) 24px clamp(40px,7vh,70px);
+    background:radial-gradient(900px 500px at 50% -10%,rgba(90,40,30,.4),transparent 62%)}
+  header .k{font-size:12px;letter-spacing:.4em;text-transform:uppercase;color:var(--gold);margin-bottom:22px}
+  header h1{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(40px,8vw,96px);line-height:1;letter-spacing:-.01em}
+  header h1 em{font-style:italic;color:var(--gold-lt)}
+  header p{max-width:60ch;margin:28px auto 0;font-size:clamp(15px,1.8vw,18px);color:var(--dim)}
+
+  .grid{max-width:1240px;margin:0 auto;padding:clamp(30px,6vh,60px) clamp(18px,4vw,48px) clamp(80px,12vh,130px);
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:clamp(22px,3vw,38px)}
+
+  .card{position:relative;display:flex;flex-direction:column;border:1px solid var(--line);border-radius:4px;
+    overflow:hidden;background:var(--bg2);transition:transform .5s var(--ease),border-color .5s,box-shadow .5s;opacity:0;transform:translateY(34px)}
+  .card.in{opacity:1;transform:none}
+  .card:hover{transform:translateY(-8px);border-color:rgba(194,166,125,.55);box-shadow:0 30px 60px -30px rgba(0,0,0,.8)}
+  .card .shot{position:relative;aspect-ratio:16/11;overflow:hidden}
+  .card .shot img{width:100%;height:100%;object-fit:cover;transition:transform 1.3s var(--ease)}
+  .card:hover .shot img{transform:scale(1.06)}
+  .card .shot::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 50%,rgba(16,13,11,.85))}
+  .card .tag{position:absolute;top:16px;left:16px;z-index:2;font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--gold-lt);background:rgba(16,13,11,.7);border:1px solid var(--line);padding:7px 14px;border-radius:2px;backdrop-filter:blur(4px)}
+  .card .body{padding:26px 26px 30px;display:flex;flex-direction:column;flex:1}
+  .card h2{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(26px,3vw,34px);line-height:1.05;margin-bottom:8px}
+  .card .mood{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+  .card p{font-size:15px;color:var(--dim);flex:1}
+  .card .go{margin-top:24px;display:inline-flex;align-items:center;gap:10px;align-self:flex-start;
+    background:var(--gold);color:var(--bg);font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+    padding:14px 28px;border-radius:2px;transition:transform .3s var(--ease),background .3s}
+  .card .go .arr{transition:transform .3s}
+  .card:hover .go{background:var(--gold-lt)}
+  .card:hover .go .arr{transform:translateX(4px)}
+
+  footer{text-align:center;padding:40px 24px 70px;border-top:1px solid var(--line);color:var(--dim);font-size:13px}
+  footer .note{max-width:62ch;margin:0 auto 16px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:19px;color:var(--ink)}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="k">Athos Travel</div>
+  <h1 class="serif">Three ways to tell<br>one <em>Holy Mountain</em></h1>
+  <p>Three design directions for the pilgrimage website. Same material, three different voices - from quiet and noble to cinematic and commercial. Open each in full and choose the one that feels right.</p>
+</header>
+
+<main class="grid" id="grid">
+
+  <article class="card">
+    <a href="svoy.html" class="shot">
+      <img src="assets/kadr-8.jpg" alt="Noble concept">
+      <span class="tag">Concept 01</span>
+    </a>
+    <div class="body">
+      <div class="mood">Restrained &middot; Noble</div>
+      <h2 class="serif">The Pilgrim's Path</h2>
+      <p>A long, story-driven page: parchment and darkness alternating, the climb to the summit told step by step, a quiet gallery and a form at the end. For those who feel Athos as silence, not a tour.</p>
+      <a href="svoy.html" class="go">Open concept <span class="arr">&rarr;</span></a>
+    </div>
+  </article>
+
+  <article class="card">
+    <a href="lux.html" class="shot">
+      <img src="assets/kadr-12.jpg" alt="Premium concept">
+      <span class="tag">Concept 02</span>
+    </a>
+    <div class="body">
+      <div class="mood">Premium &middot; Cinematic</div>
+      <h2 class="serif">All Dark, All Gold</h2>
+      <p>A minimalist, all-dark cinematic page with a hallmark logo. Nothing extra - the summit video, a few lines of gold, and an invitation. The most premium and modern of the three.</p>
+      <a href="lux.html" class="go">Open concept <span class="arr">&rarr;</span></a>
+    </div>
+  </article>
+
+  <article class="card">
+    <a href="kinozal.html" class="shot">
+      <img src="assets/kadr-4.jpg" alt="Commercial concept">
+      <span class="tag">Concept 03</span>
+    </a>
+    <div class="body">
+      <div class="mood">Commercial &middot; Conversion</div>
+      <h2 class="serif">The Pilgrimage Center</h2>
+      <p>A one-screen selling page: a big headline, the blessing of the Abbot of Vatopedi, hard numbers - ten thousand pilgrims, sixteen years, three hundred groups - and a clear call to request a journey.</p>
+      <a href="kinozal.html" class="go">Open concept <span class="arr">&rarr;</span></a>
+    </div>
+  </article>
+
+</main>
+
+<footer>
+  <div class="note serif">One of these becomes the real site - the rest show where we could go.</div>
+  <div>Athos Travel &middot; website concepts &middot; demo</div>
+</footer>
+
+<script>
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e,i){if(e.isIntersecting){
+      var el=e.target;
+      el.style.transitionDelay=(Array.prototype.indexOf.call(el.parentNode.children,el)*120)+'ms';
+      el.classList.add('in');io.unobserve(el);
+    }});
+  },{threshold:.15});
+  document.querySelectorAll('.card').forEach(function(c){io.observe(c);});
+</script>
+</body>
+</html>

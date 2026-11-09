@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Athos &middot; Pilgrimage Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Spectral:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#141211; --bg2:#1d1513; --bordo:#59191a; --bordo-deep:#2b0c11;
+    --gold:#c2a67d; --gold-2:#b0976e; --gold-lite:#eadac2;
+    --ink:#e8e5e5; --ink-dim:#b9b2aa;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:"Spectral",Georgia,serif; font-weight:400;
+    -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  }
+  ::selection{background:var(--bordo); color:#fff}
+
+  .page{position:relative; background:
+     radial-gradient(1200px 700px at 72% -10%, rgba(67,30,25,.55), transparent 60%),
+     linear-gradient(160deg,#241315 0%,#171315 45%,#311517 100%);}
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative; min-height:100svh; display:flex; flex-direction:column;
+        overflow:hidden; isolation:isolate;}
+  .hero video{position:absolute; inset:0; width:100%; height:100%;
+        object-fit:cover; z-index:-3;
+        transform:scale(1.08); animation:kenburns 26s ease-in-out infinite alternate;}
+  @keyframes kenburns{from{transform:scale(1.08) translateY(0)} to{transform:scale(1.18) translateY(-2.5%)}}
+  .hero::after{content:""; position:absolute; inset:0; z-index:-2; pointer-events:none;
+        background:
+          linear-gradient(90deg, rgba(10,8,8,.82) 0%, rgba(10,8,8,.45) 42%, rgba(10,8,8,0) 72%),
+          linear-gradient(0deg, rgba(10,8,8,.92) 0%, rgba(10,8,8,.12) 38%, rgba(10,8,8,.38) 100%);}
+  .glow{position:fixed; width:620px; height:620px; border-radius:50%; z-index:0; pointer-events:none;
+        background:radial-gradient(circle, rgba(194,166,125,.14), transparent 65%);
+        transform:translate(-50%,-50%); mix-blend-mode:screen; transition:opacity .6s; opacity:0;}
+
+  .top{position:relative; z-index:3; display:flex; align-items:center; justify-content:space-between;
+       padding:30px clamp(20px,5vw,72px);}
+  .brand{line-height:1}
+  .brand .n{font-family:"Playfair Display",serif; font-size:26px; letter-spacing:.5px; color:#fff}
+  .brand .n b{color:var(--gold); font-weight:600}
+  .brand .s{display:block; margin-top:6px; font-size:11px; letter-spacing:4px; text-transform:uppercase; color:var(--gold-2)}
+  .top-cta{font-family:"Playfair Display",serif; font-size:15px; color:var(--ink);
+       border:1px solid rgba(194,166,125,.5); padding:11px 22px; border-radius:2px;
+       text-decoration:none; transition:.3s; backdrop-filter:blur(3px)}
+  .top-cta:hover{background:rgba(194,166,125,.12); border-color:var(--gold); color:#fff}
+
+  .wrap{position:relative; z-index:2; flex:1; display:flex; flex-direction:column; justify-content:center;
+        padding:0 clamp(20px,5vw,72px); max-width:980px}
+  .eyebrow{font-family:"Playfair Display",serif; font-style:italic; font-weight:500;
+        font-size:clamp(26px,4vw,44px); color:var(--gold); letter-spacing:.5px}
+  h1{font-family:"Playfair Display",serif; font-weight:600; line-height:.96;
+        font-size:clamp(58px,10.5vw,138px); margin:2px 0 0; letter-spacing:-1px;
+        background:linear-gradient(110deg,#aa7b39 0%,#e3c389 28%,#fff4d0 50%,#e3c389 72%,#b48643 100%);
+        background-size:220% 100%; -webkit-background-clip:text; background-clip:text;
+        -webkit-text-fill-color:transparent; animation:shimmer 7s linear infinite}
+  @keyframes shimmer{to{background-position:220% 0}}
+  .lede{margin-top:22px; font-size:clamp(17px,2vw,21px); color:var(--ink);
+        font-style:italic; font-weight:400; max-width:34ch}
+  .bless{margin-top:16px; font-size:15px; color:var(--ink-dim); max-width:56ch; line-height:1.55}
+  .bless b{color:var(--gold-lite); font-weight:500; font-style:normal}
+
+  .cta{margin-top:34px; display:flex; gap:16px; flex-wrap:wrap}
+  .btn{font-family:"Playfair Display",serif; font-size:16px; letter-spacing:.3px;
+       padding:15px 30px; border-radius:2px; text-decoration:none; cursor:pointer;
+       display:inline-flex; align-items:center; gap:10px; transition:.3s; border:1px solid transparent}
+  .btn-main{background:linear-gradient(180deg,#6e2724,#4a1917); color:#fff; border-color:#7a3330;
+       box-shadow:0 14px 34px -14px rgba(110,39,36,.9)}
+  .btn-main:hover{transform:translateY(-2px); box-shadow:0 20px 40px -14px rgba(110,39,36,1)}
+  .btn-ghost{color:var(--gold-lite); border-color:rgba(194,166,125,.5)}
+  .btn-ghost:hover{border-color:var(--gold); background:rgba(194,166,125,.08); color:#fff}
+  .btn .arr{transition:transform .3s}
+  .btn:hover .arr{transform:translateX(4px)}
+
+  .stats{position:relative; z-index:2; display:flex; flex-wrap:wrap; gap:0;
+        padding:26px clamp(20px,5vw,72px) 40px; border-top:1px solid rgba(194,166,125,.14);
+        margin-top:auto}
+  .stat{flex:1; min-width:150px; padding:6px 26px 6px 0; margin-right:26px;
+        border-right:1px solid rgba(194,166,125,.14)}
+  .stat:last-child{border-right:none}
+  .stat .v{font-family:"Playfair Display",serif; font-size:clamp(30px,3.4vw,42px); color:var(--gold-lite)}
+  .stat .l{margin-top:4px; font-size:13.5px; color:var(--ink-dim); line-height:1.4}
+
+  .scroll{position:absolute; bottom:18px; left:50%; transform:translateX(-50%); z-index:3;
+        display:flex; flex-direction:column; align-items:center; gap:8px;
+        font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--gold-2); opacity:.8}
+  .scroll span{width:1px; height:40px; background:linear-gradient(var(--gold),transparent); animation:drop 2.2s ease-in-out infinite}
+  @keyframes drop{0%,100%{transform:scaleY(.4); transform-origin:top; opacity:.4} 50%{transform:scaleY(1); opacity:1}}
+
+  .next{position:relative; z-index:1; padding:clamp(70px,12vh,140px) clamp(20px,5vw,72px);
+        display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center}
+  .next h2{font-family:"Playfair Display",serif; font-weight:600; font-size:clamp(32px,4.4vw,56px);
+        color:var(--gold-lite); line-height:1.05}
+  .next p{margin-top:20px; font-size:17px; line-height:1.7; color:var(--ink); max-width:48ch}
+  .next .q{font-family:"Playfair Display",serif; font-style:italic; font-size:clamp(22px,2.6vw,30px);
+        color:var(--gold); line-height:1.4; border-left:2px solid rgba(194,166,125,.4); padding-left:26px}
+
+  .rise{opacity:0; transform:translateY(26px); transition:opacity 1s cubic-bezier(.2,.7,.2,1), transform 1s cubic-bezier(.2,.7,.2,1)}
+  .rise.in{opacity:1; transform:none}
+
+  @media(max-width:760px){
+    .next{grid-template-columns:1fr; gap:34px}
+    .stat{min-width:45%; border-right:none; padding-right:0}
+    .top-cta{display:none}
+    h1{letter-spacing:0}
+  }
+</style>
+</head>
+<body>
+<div class="glow" id="glow"></div>
+<div class="page">
+
+  <section class="hero">
+    <video autoplay muted loop playsinline poster="assets/kadr-12.jpg">
+      <source src="assets/athos-hero.mp4" type="video/mp4">
+    </video>
+
+    <header class="top">
+      <div class="brand rise" data-d="0">
+        <span class="n"><b>Athos</b>.travel</span>
+        <span class="s">pilgrimage center &middot; since 2010</span>
+      </div>
+      <a class="top-cta rise" data-d="1" href="#next">Request a journey</a>
+    </header>
+
+    <div class="wrap">
+      <div class="eyebrow rise" data-d="1">Welcome to</div>
+      <h1 class="rise" data-d="2">The Holy<br>Mountain</h1>
+      <div class="lede rise" data-d="3">The heritage and garden of the Mother of God</div>
+      <div class="bless rise" data-d="4">Pilgrimages with the blessing of <b>Archimandrite Ephraim</b>, Abbot of the Vatopedi Monastery. Our own guides - theologians, our own escort, our own fleet of off-road vehicles.</div>
+      <div class="cta rise" data-d="5">
+        <a class="btn btn-main" href="#next">Request a journey <span class="arr">&rarr;</span></a>
+        <a class="btn btn-ghost" href="#next">See the routes</a>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat rise" data-d="5"><div class="v" data-count="10000" data-suffix="+">0</div><div class="l">pilgrims from around the world since 2010</div></div>
+      <div class="stat rise" data-d="6"><div class="v" data-count="16" data-suffix=" years">0</div><div class="l">arranging private and group journeys</div></div>
+      <div class="stat rise" data-d="7"><div class="v" data-count="300" data-suffix="+">0</div><div class="l">groups guided to Athos</div></div>
+      <div class="stat rise" data-d="8"><div class="v">Own</div><div class="l">fleet of jeeps and theologian guides</div></div>
+    </div>
+
+    <div class="scroll"><span></span>scroll</div>
+  </section>
+
+  <section class="next" id="next">
+    <div class="rise" data-d="0">
+      <h2>A mountain you go to<br>not for the views</h2>
+      <p>Athos is a monastic republic under the protection of the Mother of God - a thousand years of unbroken prayer. We do not carry tourists. We prepare the pilgrim: the diamonitirion, nights in the monasteries, meetings with the elders, the service at dawn.</p>
+    </div>
+    <div class="q rise" data-d="2">"Here time moves differently. For over a decade we have led people to this place - and each one returns a different man."</div>
+  </section>
+
+</div>
+
+<script>
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){
+    const d=+(e.target.dataset.d||0); e.target.style.transitionDelay=(d*90)+"ms";
+    e.target.classList.add("in"); io.unobserve(e.target);
+    const c=e.target.querySelector?.("[data-count]"); if(c) count(c);
+  }});},{threshold:.2});
+  document.querySelectorAll(".rise").forEach(el=>io.observe(el));
+
+  function count(el){
+    const t=+el.dataset.count, suf=el.dataset.suffix||""; const dur=1400; let s=null;
+    const fmt=n=>n>=1000?n.toLocaleString("en-US"):n;
+    function step(ts){ if(!s)s=ts; const p=Math.min((ts-s)/dur,1);
+      const e=1-Math.pow(1-p,3); el.textContent=fmt(Math.round(t*e))+suf;
+      if(p<1)requestAnimationFrame(step);} requestAnimationFrame(step);
+  }
+
+  const glow=document.getElementById("glow");
+  addEventListener("pointermove",e=>{glow.style.opacity=1;
+    glow.style.left=e.clientX+"px"; glow.style.top=e.clientY+"px";});
+  addEventListener("pointerleave",()=>glow.style.opacity=0);
+
+  const wrap=document.querySelector(".wrap");
+  addEventListener("scroll",()=>{const y=scrollY; if(y<900){
+    wrap.style.transform="translateY("+(y*0.18)+"px)"; wrap.style.opacity=(1-y/700).toFixed(2);}},{passive:true});
+</script>
+</body>
+</html>
